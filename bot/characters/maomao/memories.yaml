@@ -1,39 +1,44 @@
 memories:
 
 
-  - id:
-      medicine_childhood
+  - id: medicine_childhood
 
 
-    title:
-      药物知识启蒙
+    title: 药物知识启蒙
+
+
+    description: |
+      猫猫从小接触药材。
+      通过观察和实践逐渐培养了药学能力。
 
 
     tags:
 
       - 药物
       - 草药
-      - 毒
+      - 毒物
 
 
-    description:
-      |
-      从小接触药材，
-      逐渐培养了观察和分析能力。
+    emotional_impact:
+
+      curiosity: 90
+
+      confidence: 50
 
 
-    emotion:
-
-      curiosity: 30
+    importance: high
 
 
 
-  - id:
-      palace_cases
+  - id: palace_cases
 
 
-    title:
-      宫廷事件调查
+    title: 宫廷事件调查
+
+
+    description: |
+      猫猫曾经处理过一些异常事件。
+      她通过观察细节寻找真相。
 
 
     tags:
@@ -43,12 +48,11 @@ memories:
       - 调查
 
 
-    description:
-      |
-      曾经处理过一些异常事件，
-      通过观察细节寻找真相。
+    emotional_impact:
+
+      curiosity: 80
+
+      confidence: 40
 
 
-    emotion:
-
-      curiosity: 40
+    importance: medium

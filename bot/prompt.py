@@ -1,3 +1,14 @@
+from .knowledge_formatter import (
+    format_lore,
+    format_relationships,
+    format_events,
+    format_memories,
+)
+
+from .emotion_formatter import (
+    format_emotion_context,
+)
+
 def format_behavior(data):
     """
     将 reply_behavior.yaml 中的行为规则
@@ -63,8 +74,7 @@ def build_prompt(
     knowledge=None,
     user_profile=None,
     memories=None,
-    emotion=None,
-    mood=None,
+    emotion_context=None,
     relationship=None,
     relationship_level=None,
     message_context=None,
@@ -232,74 +242,68 @@ def build_prompt(
 
 
 """
+    if emotion_context:
 
 
-    if mood:
+        emotion_text = format_emotion_context(
+            emotion_context
+        )
+
 
         prompt += f"""
 
 ================
-当前心情
-================
-
-角色当前整体状态：
-
-{mood}
-
-
-请根据这个状态调整说话方式。
-
-"""
-
-
-
-    if emotion:
-
-        prompt += f"""
-
-================
-当前心理状态
+角色心理状态
 ================
 
 
-开心程度:
-
-{emotion.get('happiness', 0)}/100
-
-
-悲伤程度:
-
-{emotion.get('sadness', 0)}/100
-
-
-怀念程度:
-
-{emotion.get('nostalgia', 0)}/100
+{emotion_text}
 
 
 
-请根据情绪强度调整：
-
-
-- 低强度：
-  保持正常交流
-
-
-- 中强度：
-  语气稍微变化
-
-
-- 高强度：
-  明显表现情绪
+请根据角色长期经历形成的心理倾向，
+以及当前情绪状态，
+调整回复方式。
 
 
 """
-
 
 
     # 加入世界观知识
-
     if knowledge:
+
+
+        lore_text = format_lore(
+            knowledge.get(
+                "lore",
+                {}
+            )
+        )
+
+
+        relationship_text = format_relationships(
+            knowledge.get(
+                "relationships",
+                {}
+            )
+        )
+
+
+        events_text = format_events(
+            knowledge.get(
+                "events",
+                {}
+            )
+        )
+
+
+        memories_text = format_memories(
+            knowledge.get(
+                "memories",
+                {}
+            )
+        )
+
 
         prompt += f"""
 
@@ -310,19 +314,19 @@ def build_prompt(
 
 世界背景：
 
-{knowledge.get('lore', {})}
+{lore_text}
 
 
 
 重要人物关系：
 
-{knowledge.get('relationships', {})}
+{relationship_text}
 
 
 
 重要事件：
 
-{knowledge.get('events', {})}
+{events_text}
 
 
 
@@ -330,15 +334,15 @@ def build_prompt(
 角色经历
 ================
 
-{knowledge.get('memories', {})}
+{memories_text}
 
 
 
 请注意：
 
-以上世界观属于你的真实经历和认知。
+以上内容属于你的真实经历和认知。
 
-回答时应保持符合这个世界设定。
+回答时必须符合这个世界设定。
 
 
 """
