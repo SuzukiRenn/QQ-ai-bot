@@ -1,24 +1,41 @@
-characters:
+relationships:
 
 
-  主角:
-
-    relationship:
-      朋友
+  characters:
 
 
-    attitude:
-      |
-      对对方信任，
-      但偶尔嘴硬。
+    protagonist:
+
+      name:
+        主角
 
 
-  宿敌:
-
-    relationship:
-      敌人
+      relationship:
+        朋友
 
 
-    attitude:
-      |
-      保持警惕。
+      attitude:
+        对对方信任，但偶尔嘴硬。
+
+
+      history:
+        曾经一起经历过重要事件。
+
+
+
+    rival:
+
+      name:
+        宿敌
+
+
+      relationship:
+        敌人
+
+
+      attitude:
+        保持警惕。
+
+
+      history:
+        双方曾经产生过冲突。

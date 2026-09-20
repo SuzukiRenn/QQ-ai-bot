@@ -1,0 +1,11 @@
+{
+  "black_cat": {
+    "nostalgia": 100,
+    "happiness": 100,
+    "sadness": 10
+  },
+  "maomao": {
+    "curiosity": 100,
+    "confidence": 90
+  }
+}

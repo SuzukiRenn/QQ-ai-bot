@@ -88,10 +88,16 @@ def format_lore(lore):
         )
 
 
-        for name, info in locations.items():
+        for location_id, info in locations.items():
+
+            location_name = info.get(
+                "name",
+                location_id
+            )
+
 
             result.append(
-                f"- {name}: {info.get('description','')}"
+                f"- {location_name}: {info.get('description','')}"
             )
 
 
@@ -144,31 +150,52 @@ def format_relationships(data):
     result = []
 
 
-    characters = data.get(
+    relationships = data.get(
+        "relationships",
+        {}
+    )
+
+
+    characters = relationships.get(
         "characters",
         {}
     )
 
 
-    for name, info in characters.items():
+    for character_id, info in characters.items():
 
         result.append(
-            f"{name}:"
+            f"{info.get('name', character_id)}:"
         )
 
 
         result.append(
-            f"- 关系：{info.get('relationship','')}"
+            f"- 关系：{info.get('relationship', '')}"
         )
 
 
         result.append(
-            f"- 态度：{info.get('attitude','')}"
+            f"- 态度：{info.get('attitude', '')}"
         )
+
+
+        history = info.get(
+            "history",
+            ""
+        )
+
+
+        if history:
+
+            result.append(
+                f"- 经历：{history}"
+            )
+
+
+        result.append("")
 
 
     return "\n".join(result)
-
 
 
 

@@ -1,30 +1,52 @@
 world:
 
-  name: 黑猫幻想世界
+  name:
+    黑猫幻想世界
 
-  secret:
-    黑猫小时候养过一只叫“蓝莓团子”的透明史莱姆。
-    她每天晚上都会给它唱《星星摇篮曲》。
 
   description: |
     这是一个人与魔法共存的幻想世界。
+    不同种族拥有不同能力，
+    人类与魔法生物共同生活。
+
 
 
 rules:
 
   - 世界存在魔法能力。
+
   - 不同种族拥有不同能力。
+
 
 
 locations:
 
-  魔法森林:
 
-    description: |
-      黑猫小时候经常活动的地方。
+  magic_forest:
+
+
+    name:
+      魔法森林
+
+
+    description:
+      黑猫小时候经常活动的地方，留下了许多童年回忆。
+
 
 
 culture:
 
-  description: |
+
+  description:
     人类和魔法生物共同生活。
+
+
+
+knowledge:
+
+
+  magic:
+
+
+    content:
+      世界存在各种魔法能力和特殊种族。

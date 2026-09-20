@@ -1,5 +1,6 @@
 from bot.knowledge import load_character_knowledge
 from bot.character_manager import load_character
+from bot.emotion_context import build_emotion_context
 
 from bot.prompt import build_prompt
 
@@ -25,6 +26,11 @@ def test_character(character_id):
         character_id
     )
 
+    emotion_context = build_emotion_context(
+        character_id,
+        "001"
+    )
+
 
     prompt = build_prompt(
         character=character,
@@ -35,7 +41,8 @@ def test_character(character_id):
             "familiarity":70
         },
         relationship_level="friend",
-        reply_type="tease"
+        reply_type="tease",
+        emotion_context=emotion_context,
     )
 
 

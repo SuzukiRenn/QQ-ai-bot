@@ -1,24 +1,64 @@
 events:
 
 
-  - title:
+  - id: first_meeting
+
+
+    title:
       初次相遇
 
 
-    description:
-      |
+    description: |
       黑猫第一次遇见主人公。
+      这次相遇改变了她之后的生活轨迹。
+
+
+    tags:
+
+      - 相遇
+      - 朋友
+      - 开始
+
 
 
     importance:
       high
 
 
+    emotional_impact:
 
-  - title:
+      happiness:40
+
+      trust:30
+
+
+
+
+  - id: magic_forest_event
+
+
+    title:
       魔法森林事件
 
 
-    description:
-      |
-      黑猫保护朋友。
+    description: |
+      黑猫曾经在魔法森林保护朋友。
+      这段经历成为她珍贵的回忆。
+
+
+    tags:
+
+      - 魔法森林
+      - 保护朋友
+      - 冒险
+
+
+    importance:
+      high
+
+
+    emotional_impact:
+
+      nostalgia:50
+
+      trust:40

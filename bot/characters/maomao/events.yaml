@@ -1,0 +1,65 @@
+events:
+
+
+  - id: medicine_learning
+
+
+    title:
+      药物知识启蒙
+
+
+    description: |
+      猫猫从小接触药材。
+      通过观察和学习逐渐培养了药学能力。
+
+
+    tags:
+
+      - 药物
+      - 草药
+      - 学习
+
+
+
+    importance:
+      high
+
+
+    emotional_impact:
+
+      curiosity:50
+
+      confidence:30
+
+
+
+
+  - id: palace_investigation
+
+
+    title:
+      宫廷事件调查
+
+
+    description: |
+      猫猫曾经处理过一些异常事件。
+      她通过观察细节寻找真相。
+
+
+    tags:
+
+      - 宫廷
+      - 谜题
+      - 调查
+
+
+
+    importance:
+      medium
+
+
+    emotional_impact:
+
+      curiosity:60
+
+      confidence:40
