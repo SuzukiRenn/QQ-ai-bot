@@ -1,0 +1,17 @@
+services:
+
+  redis:
+    image: redis:latest
+    container_name: qqbot-redis
+    restart: always
+
+  bot:
+    build: ./bot
+    container_name: qqbot-api
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY}
+    depends_on:
+      - redis
