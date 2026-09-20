@@ -1,36 +1,62 @@
 import redis
 import json
+import os
 
 
 client = redis.Redis(
-    host="redis",
-    port=6379,
+    host=os.getenv("REDIS_HOST", "localhost"),
+    port=int(os.getenv("REDIS_PORT", 6379)),
     decode_responses=True
 )
 
 
-def save_message(user_id, role, content):
+def save_message(
+    character_id,
+    user_id,
+    role,
+    content
+):
 
     data = {
+
         "role": role,
+
         "content": content
+
     }
 
+
     client.rpush(
-        f"chat:{user_id}",
-        json.dumps(data, ensure_ascii=False)
+        f"chat:{character_id}:{user_id}",
+
+        json.dumps(
+            data,
+            ensure_ascii=False
+        )
     )
 
 
-def get_history(user_id):
+
+def get_history(
+    character_id,
+    user_id
+):
 
     messages = client.lrange(
-        f"chat:{user_id}",
+
+        f"chat:{character_id}:{user_id}",
+
         -10,
+
         -1
+
     )
 
+
     return [
+
         json.loads(item)
+
         for item in messages
+
     ]

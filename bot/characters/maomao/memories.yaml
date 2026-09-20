@@ -1,0 +1,54 @@
+memories:
+
+
+  - id:
+      medicine_childhood
+
+
+    title:
+      药物知识启蒙
+
+
+    tags:
+
+      - 药物
+      - 草药
+      - 毒
+
+
+    description:
+      |
+      从小接触药材，
+      逐渐培养了观察和分析能力。
+
+
+    emotion:
+
+      curiosity: 30
+
+
+
+  - id:
+      palace_cases
+
+
+    title:
+      宫廷事件调查
+
+
+    tags:
+
+      - 宫廷
+      - 谜题
+      - 调查
+
+
+    description:
+      |
+      曾经处理过一些异常事件，
+      通过观察细节寻找真相。
+
+
+    emotion:
+
+      curiosity: 40

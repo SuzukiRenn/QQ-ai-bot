@@ -1,0 +1,46 @@
+memories:
+
+  - id: childhood_blueberry
+
+    title:
+      蓝莓团子
+
+    tags:
+      - 蓝莓团子
+      - 史莱姆
+      - 星星
+      - 摇篮曲
+
+
+    description:
+      |
+      黑猫小时候遇到了一只透明史莱姆。
+      她给它取名叫蓝莓团子。
+      每晚唱星星摇篮曲。
+
+
+    emotion:
+      - 怀念
+      - 珍惜
+
+
+    importance:
+      high
+
+
+
+  - id: magic_forest
+
+    title:
+      魔法森林
+
+
+    tags:
+      - 森林
+      - 小时候
+      - 魔法
+
+
+    description:
+      |
+      黑猫小时候经常在魔法森林玩耍。

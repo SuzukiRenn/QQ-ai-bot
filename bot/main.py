@@ -1,60 +1,50 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
+from typing import Optional
 
-from ai import ask_ai
-from memory import save_message, get_history
+from chat_service import chat
+
 
 
 app = FastAPI()
 
 
+
 class ChatRequest(BaseModel):
+
     user_id: str
+
     message: str
+
+    group_id: Optional[str] = None
+
 
 
 @app.get("/")
 def home():
+
     return {
-        "status": "running"
+        "status":"running"
     }
 
 
+
 @app.post("/chat")
+def chat_api(
+    req: ChatRequest
+):
 
-def chat(req:ChatRequest):
-
-    history = get_history(
-        req.user_id
+    answer = chat(
+        req.user_id,
+        req.message,
+        req.group_id
     )
 
+    if answer is None:
 
-    history.append(
-        {
-            "role": "user",
-            "content": req.message
+        return {
+            "answer": ""
         }
-    )
-
-
-    answer = ask_ai(
-        history
-    )
-
-
-    save_message(
-        req.user_id,
-        "user",
-        req.message
-    )
-
-
-    save_message(
-        req.user_id,
-        "assistant",
-        answer
-    )
-
 
     return {
         "answer": answer

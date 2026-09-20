@@ -1,5 +1,18 @@
-.env
-data/
-logs/
+# python
+venv/
 __pycache__/
 *.pyc
+
+
+# environment
+.env
+
+
+# runtime data
+emotion_state.json
+relationships.json
+user_profiles.json
+
+
+# logs
+logs/

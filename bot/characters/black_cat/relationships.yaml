@@ -1,0 +1,24 @@
+characters:
+
+
+  主角:
+
+    relationship:
+      朋友
+
+
+    attitude:
+      |
+      对对方信任，
+      但偶尔嘴硬。
+
+
+  宿敌:
+
+    relationship:
+      敌人
+
+
+    attitude:
+      |
+      保持警惕。
