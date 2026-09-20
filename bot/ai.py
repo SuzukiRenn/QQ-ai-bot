@@ -1,11 +1,11 @@
 import os
 from dotenv import load_dotenv
-from llm import client
+from .llm import client
 
 load_dotenv()
 
-from prompt import build_prompt
-from memory_retriever import retrieve_memories
+from .prompt import build_prompt
+from .memory_retriever import retrieve_memories
 
 
 def ask_ai(

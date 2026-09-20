@@ -2,12 +2,29 @@ import yaml
 import os
 
 
+BASE_DIR = os.path.dirname(
+    os.path.abspath(__file__)
+)
+
+
+CHARACTER_DIR = os.path.join(
+    BASE_DIR,
+    "characters"
+)
+
+
+
 def load_character(character_id):
 
-    path = f"characters/{character_id}/card.yaml"
+    path = os.path.join(
+        CHARACTER_DIR,
+        character_id,
+        "card.yaml"
+    )
 
 
     if not os.path.exists(path):
+
         raise FileNotFoundError(
             f"Character card not found: {path}"
         )

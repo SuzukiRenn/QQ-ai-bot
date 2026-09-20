@@ -1,7 +1,7 @@
 import os
 
-from character import load_character
-from knowledge import load_character_knowledge
+from .character import load_character
+from .knowledge import load_character_knowledge
 
 DEFAULT_CHARACTER="maomao"
 

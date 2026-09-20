@@ -1,6 +1,6 @@
 import json
 
-from llm import client
+from .llm import client
 
 
 

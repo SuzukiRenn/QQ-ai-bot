@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from typing import Optional
 
-from chat_service import chat
+from .chat_service import chat
 
 
 

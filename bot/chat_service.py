@@ -1,55 +1,55 @@
-from character_manager import (
+from .character_manager import (
     get_character_id,
     get_character_context
 )
 
-from relationship import (
+from .relationship import (
     get_relationship,
     update_relationship,
     get_relationship_level
 )
 
-from reply_decision import should_reply
+from .reply_decision import should_reply
 
-from message_analyzer import analyze_message
+from .message_analyzer import analyze_message
 
-from emotion import (
+from .emotion import (
     decay_emotion,
     get_emotion,
     update_emotion,
     get_mood
 )
 
-from relationship_trigger import (
+from .relationship_trigger import (
     analyze_relationship_change
 )
 
 
-from user_profile import (
+from .user_profile import (
     get_user_profile,
     update_user_profile
 )
 
 
-from profile_extractor import extract_profile
+from .profile_extractor import extract_profile
 
 
-from memory import (
+from .memory import (
     get_history,
     save_message
 )
 
 
-from memory_retriever import retrieve_memories
+from .memory_retriever import retrieve_memories
 
 
-from emotion_engine import calculate_memory_emotion
+from .emotion_engine import calculate_memory_emotion
 
 
-from emotion_trigger import analyze_emotion_change
+from .emotion_trigger import analyze_emotion_change
 
 
-from ai import ask_ai
+from .ai import ask_ai
 
 
 
