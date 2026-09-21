@@ -8,6 +8,10 @@ from .chat_service import chat
 
 app = FastAPI()
 
+from .runtime import init_runtime
+
+
+init_runtime()
 
 
 class ChatRequest(BaseModel):

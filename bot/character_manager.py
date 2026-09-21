@@ -102,3 +102,30 @@ class CharacterManager:
         return list(
             self.characters.keys()
         )
+
+
+def get_character_id(
+    user_id,
+    group_id=None
+):
+
+    """
+    当前角色选择逻辑
+
+    暂时保持原行为：
+
+    返回默认角色
+
+    后续可以接：
+    - 群角色配置
+    - 用户偏好
+    - 场景选择
+    """
+
+
+    if group_id:
+
+        return "black_cat"
+
+
+    return "black_cat"

@@ -1,7 +1,10 @@
+from .runtime import character_manager
+
+
 from .character_manager import (
-    get_character_id,
-    get_character_context
+    get_character_id
 )
+
 
 from .relationship import (
     get_relationship,
@@ -9,16 +12,26 @@ from .relationship import (
     get_relationship_level
 )
 
-from .reply_decision import should_reply
 
-from .message_analyzer import analyze_message
+from .reply_decision import (
+    should_reply
+)
+
+
+from .message_analyzer import (
+    analyze_message
+)
+
 
 from .emotion import (
-    decay_emotion,
-    get_emotion,
-    update_emotion,
-    get_mood
+    decay_emotion
 )
+
+
+from .emotion_context import (
+    build_emotion_context
+)
+
 
 from .relationship_trigger import (
     analyze_relationship_change
@@ -31,7 +44,9 @@ from .user_profile import (
 )
 
 
-from .profile_extractor import extract_profile
+from .profile_extractor import (
+    extract_profile
+)
 
 
 from .memory import (
@@ -40,16 +55,21 @@ from .memory import (
 )
 
 
-from .memory_retriever import retrieve_memories
+from .memory_retriever import (
+    retrieve_memories
+)
 
 
-from .emotion_engine import calculate_memory_emotion
+from .emotion_trigger import (
+    analyze_emotion_change
+)
 
 
-from .emotion_trigger import analyze_emotion_change
+from .ai import (
+    ask_ai
+)
 
 
-from .ai import ask_ai
 
 
 
@@ -64,15 +84,24 @@ def chat(
     # 1. 获取角色
     # =====================
 
+
     character_id = get_character_id(
         user_id,
         group_id
     )
 
 
-    character_context = get_character_context(
+    character_context = character_manager.get(
         character_id
     )
+
+
+    if not character_context:
+
+        raise Exception(
+            f"Character not loaded: {character_id}"
+        )
+
 
 
     print(
@@ -81,11 +110,56 @@ def chat(
     )
 
 
-    knowledge = character_context["knowledge"]
 
     # =====================
-    # 2. 情绪衰减
+    # 2. 构建 Knowledge Context
     # =====================
+
+
+    knowledge = {
+
+        "lore":
+            character_context.get(
+                "lore",
+                {}
+            ),
+
+
+        "relationships":
+            character_context.get(
+                "relationships",
+                {}
+            ),
+
+
+        "events":
+            character_context.get(
+                "events",
+                {}
+            ),
+
+
+        "memories":
+            character_context.get(
+                "memories",
+                {}
+            ),
+
+
+        "reply_behavior":
+            character_context.get(
+                "reply_behavior",
+                {}
+            )
+
+    }
+
+
+
+    # =====================
+    # 3. 情绪衰减
+    # =====================
+
 
     decay_emotion(
         character_id,
@@ -94,27 +168,50 @@ def chat(
 
 
 
+
+
     # =====================
-    # 3. 用户资料提取
+    # 4. 用户资料
     # =====================
+
 
     profile_update = extract_profile(
         message
     )
+
+
+    if profile_update:
+
+        update_user_profile(
+            user_id,
+            profile_update
+        )
+
+
+    profile = get_user_profile(
+        user_id
+    )
+
+
+
+
+
+    # =====================
+    # 5. 关系系统
+    # =====================
+
 
     relationship = get_relationship(
         character_id,
         user_id
     )
 
+
     relationship_level = get_relationship_level(
         relationship
     )
 
 
-        # =====================
-    # 关系变化分析
-    # =====================
 
     relationship_result = analyze_relationship_change(
         message
@@ -136,24 +233,13 @@ def chat(
         )
 
 
-    if profile_update:
-
-        update_user_profile(
-            user_id,
-            profile_update
-        )
-
-
-
-    profile = get_user_profile(
-        user_id
-    )
 
 
 
     # =====================
-    # 4. 获取聊天历史
+    # 6. 聊天历史
     # =====================
+
 
     history = get_history(
         character_id,
@@ -163,16 +249,19 @@ def chat(
 
     history.append(
         {
-            "role":"user",
-            "content":message
+            "role": "user",
+            "content": message
         }
     )
 
 
 
+
+
     # =====================
-    # 5. 角色记忆检索
+    # 7. 记忆检索
     # =====================
+
 
     related_memories = retrieve_memories(
         message,
@@ -184,90 +273,26 @@ def chat(
 
 
 
-    # =====================
-    # 6. 情绪更新
-    # =====================
-
-    total_change = {}
-
-
-
-    try:
-
-        result = analyze_emotion_change(
-            message
-        )
-
-
-        for k,v in result.get(
-            "emotion_change",
-            {}
-        ).items():
-
-            total_change[k] = (
-                total_change.get(k,0)
-                +
-                v
-            )
-
-
-    except Exception:
-
-        pass
-
-
-
-    try:
-
-        memory_change = calculate_memory_emotion(
-            related_memories
-        )
-
-
-        for k,v in memory_change.items():
-
-            total_change[k] = (
-                total_change.get(k,0)
-                +
-                v
-            )
-
-
-    except Exception:
-
-        pass
-
-
-
-    if total_change:
-
-        update_emotion(
-            character_id,
-            user_id,
-            total_change
-        )
-
 
 
     # =====================
-    # 7. 当前状态
+    # 8. 当前 Emotion Context
     # =====================
 
-    emotion = get_emotion(
+
+    emotion_context = build_emotion_context(
         character_id,
         user_id
     )
 
 
-    mood = get_mood(
-        emotion
-    )
 
 
 
     # =====================
-    # 8. 调用角色AI
+    # 9. 消息理解
     # =====================
+
 
     message_context = analyze_message(
         message,
@@ -280,19 +305,35 @@ def chat(
         message_context
     )
 
+
+
+
+
+    # =====================
+    # 10. 回复决策
+    # =====================
+
+
     decision = should_reply(
         message,
         relationship,
-        emotion,
+        emotion_context,
         message_context
     )
 
-    reply_type = decision.get(
-    "reply_type",
-    "answer"
-)
 
-    print("回复决策:", decision)
+    reply_type = decision.get(
+        "reply_type",
+        "answer"
+    )
+
+
+    print(
+        "回复决策:",
+        decision
+    )
+
+
 
     if not decision.get(
         "should_reply",
@@ -301,22 +342,39 @@ def chat(
 
         return None
 
+
+
+
+
+    # =====================
+    # 11. AI 回复
+    # =====================
+
+
     answer = ask_ai(
         history,
+
         user_profile=profile,
+
         relationship=relationship,
+
         relationship_level=relationship_level,
-        emotion=emotion,
-        mood=mood,
+
+        emotion_context=emotion_context,
+
         character_context=character_context,
-        reply_type=reply_type 
+
+        reply_type=reply_type
     )
 
 
 
+
+
     # =====================
-    # 9. 保存聊天
+    # 12. 保存记录
     # =====================
+
 
     save_message(
         character_id,
@@ -332,6 +390,7 @@ def chat(
         "assistant",
         answer
     )
+
 
 
     return answer
