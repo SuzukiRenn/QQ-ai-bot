@@ -1,6 +1,7 @@
 import json
 
 from .llm import client
+
 from .conversation_formatter import (
     format_conversation_messages
 )
@@ -69,6 +70,10 @@ def build_character_names(
     return names
 
 
+# ============================================================
+# Explicit Character Name
+# ============================================================
+
 def has_explicit_character_name(
     message,
     character_names
@@ -78,6 +83,12 @@ def has_explicit_character_name(
 
     这是确定性证据，
     优先级高于 LLM target 判断。
+
+    例如：
+
+    黑猫晚上好
+    黑猫是笨蛋
+    小黑猫你怎么看
     """
 
     normalized_message = (
@@ -117,6 +128,10 @@ def has_explicit_character_name(
     return False
 
 
+# ============================================================
+# Direct Follow-up
+# ============================================================
+
 def is_direct_followup(
     recent_messages,
     current_user_id,
@@ -132,7 +147,14 @@ def is_direct_followup(
       ↓
     用户A继续接话
 
-    这种连续对话属于明确 Reactive 对话。
+    注意：
+
+    这里只表示“存在连续对话结构”。
+
+    最终是否仍然是在和角色说话，
+    还要检查当前消息是否明确切换到了第三方对象。
+
+    因此 direct_followup 不是最高优先级规则。
     """
 
     messages = list(
@@ -153,7 +175,9 @@ def is_direct_followup(
     previous_user_message = messages[-3]
 
 
-    # 当前消息必须是这个用户刚发的
+    # ========================================================
+    # 当前消息必须来自当前用户
+    # ========================================================
 
     if str(
         current.get(
@@ -174,7 +198,9 @@ def is_direct_followup(
         return False
 
 
-    # 上一句必须是当前角色说的
+    # ========================================================
+    # 上一句必须是当前角色发送
+    # ========================================================
 
     if character_message.get(
         "sender_type"
@@ -197,8 +223,10 @@ def is_direct_followup(
         return False
 
 
+    # ========================================================
     # 角色上一句话之前，
-    # 必须也是当前这个用户在和角色交流
+    # 必须也是当前用户
+    # ========================================================
 
     if previous_user_message.get(
         "sender_type",
@@ -219,7 +247,9 @@ def is_direct_followup(
         return False
 
 
-    # 时间不能隔得过久
+    # ========================================================
+    # 时间间隔限制
+    # ========================================================
 
     try:
 
@@ -259,6 +289,161 @@ def is_direct_followup(
 
 
 # ============================================================
+# Explicit Third-Person Addressee
+# ============================================================
+
+def is_explicit_third_person_addressee(
+    message,
+    person,
+    character_names
+):
+    """
+    判断当前消息是否明确把第三方作为说话对象。
+
+    例如：
+
+    高晋勋，来玩原神
+    李兆基 你来一下
+    王强，你在吗？
+    小明：过来帮忙
+
+    这种情况下：
+
+    即使上一轮正在和角色聊天，
+    当前 target 也必须切换为 third_person。
+
+    注意：
+
+    “你觉得李兆基怎么样？”
+
+    中的李兆基只是讨论对象，
+    并不是说话对象，
+    因为名字不在句首直接呼叫位置。
+    """
+
+    if not person:
+
+        return False
+
+
+    normalized_message = (
+        str(message)
+        .strip()
+        .lower()
+    )
+
+
+    normalized_person = (
+        str(person)
+        .strip()
+        .lower()
+    )
+
+
+    if not normalized_person:
+
+        return False
+
+
+    # ========================================================
+    # person 如果其实就是当前角色名字 / alias
+    # 则不能当第三方
+    # ========================================================
+
+    for name in character_names:
+
+        normalized_name = (
+            str(name)
+            .strip()
+            .lower()
+        )
+
+
+        if (
+            normalized_name
+            and normalized_name
+            == normalized_person
+        ):
+
+            return False
+
+
+    # ========================================================
+    # 必须明确以第三方名字开头
+    # ========================================================
+
+    if not normalized_message.startswith(
+        normalized_person
+    ):
+
+        return False
+
+
+    remaining = normalized_message[
+        len(normalized_person):
+    ]
+
+
+    # ========================================================
+    # 单独一个名字
+    #
+    # 例如：
+    #
+    # 高晋勋
+    #
+    # 也可以视为明确呼叫第三方。
+    # ========================================================
+
+    if not remaining:
+
+        return True
+
+
+    # 去除名字后的前导空白
+
+    remaining = (
+        remaining.lstrip()
+    )
+
+
+    if not remaining:
+
+        return True
+
+
+    # ========================================================
+    # 明确呼叫模式
+    # ========================================================
+    #
+    # 高晋勋，来玩原神
+    # 高晋勋, 来一下
+    # 高晋勋：过来
+    # 高晋勋！你在哪
+    # 高晋勋？在吗
+    # 高晋勋你过来
+    # ========================================================
+
+    if remaining.startswith(
+        (
+            "，",
+            ",",
+            "：",
+            ":",
+            "！",
+            "!",
+            "？",
+            "?",
+            "你"
+        )
+    ):
+
+        return True
+
+
+    return False
+
+
+# ============================================================
 # Main Analyzer
 # ============================================================
 
@@ -284,25 +469,17 @@ def analyze_message(
     )
 
 
-    direct_followup = is_direct_followup(
-
-        recent_messages=
-            recent_messages,
-
-        current_user_id=
-            current_user_id,
-
-        character_id=
-            character_id
-
-    )
-
+    # ========================================================
+    # Character Names
+    # ========================================================
 
     character_names = build_character_names(
 
-        character_name=character_name,
+        character_name=
+            character_name,
 
-        character_aliases=character_aliases
+        character_aliases=
+            character_aliases
 
     )
 
@@ -310,7 +487,8 @@ def analyze_message(
     explicit_character_name = (
         has_explicit_character_name(
 
-            message=message,
+            message=
+                message,
 
             character_names=
                 character_names
@@ -318,6 +496,30 @@ def analyze_message(
         )
     )
 
+
+    # ========================================================
+    # Conversation Follow-up
+    # ========================================================
+
+    direct_followup = (
+        is_direct_followup(
+
+            recent_messages=
+                recent_messages,
+
+            current_user_id=
+                current_user_id,
+
+            character_id=
+                character_id
+
+        )
+    )
+
+
+    # ========================================================
+    # Prompt Context
+    # ========================================================
 
     aliases_text = (
 
@@ -332,13 +534,21 @@ def analyze_message(
 
     )
 
+
     recent_chat_text = (
+
         format_conversation_messages(
+
             recent_messages,
+
             limit=8
+
         )
+
         if recent_messages
+
         else "无"
+
     )
 
 
@@ -352,7 +562,7 @@ def analyze_message(
 你的任务：
 
 分析一条聊天消息的语义，
-判断这句话是否是在直接和当前角色说话。
+判断这句话当前主要是在对谁说。
 
 不要生成回复。
 
@@ -388,7 +598,7 @@ group
 
 
 ====================
-用户消息
+当前用户消息
 ====================
 
 {message}
@@ -402,45 +612,78 @@ group
 
 
 ====================
-连续对话提示
+连续对话结构
 ====================
 
 当前消息是否满足：
 
-同一用户 → 角色回复 → 同一用户继续接话
+同一用户
+→ 当前角色回复
+→ 同一用户继续发言
+
+结果：
 
 {direct_followup}
 
 
-如果 direct_followup = True：
+注意：
 
-说明当前用户正在自然延续与角色的上一轮对话。
+direct_followup 只表示：
 
-即使当前消息：
+“当前消息可能是在延续与角色的上一轮对话”。
 
-- 没再次叫角色名字
-- 没出现“你”
-- 只是纠正、吐槽、反驳或补充上一句话
+它不是绝对规则。
 
-通常也应该判断：
 
-target = character
-
+如果当前消息明确出现新的说话对象：
 
 例如：
 
 用户：
-“黑猫黑猫黑猫”
+“你笨”
 
 角色：
-“喵！别一直叫啦……虽然现在只是在晒太阳。”
+“你才笨呢！”
+
+同一用户：
+“高晋勋，来玩原神”
+
+虽然形式上是：
+
+用户
+→ 角色
+→ 同一用户
+
+但是当前消息已经明确转向：
+
+高晋勋
+
+因此：
+
+target = third_person
+
+
+再例如：
+
+角色：
+“我刚才在晒太阳。”
 
 同一用户：
 “现在是晚上哪有太阳”
 
-最后一句应该：
+当前消息没有出现新的说话对象，
+而且语义明显是在纠正角色上一句话。
+
+因此：
 
 target = character
+
+
+核心原则：
+
+明确说话对象
+优先于
+连续对话结构。
 
 
 ====================
@@ -449,9 +692,10 @@ target = character
 
 1. target
 
+
 target 表示：
 
-“这句话主要是在对谁说 / 是否明确需要当前角色回应”
+“当前这句话主要是在对谁说”
 
 而不是：
 
@@ -466,26 +710,77 @@ third_person
 unknown
 
 
-character:
+--------------------
+character
+--------------------
 
-消息明确是在对当前角色说话。
+消息明确是在与当前角色交流。
 
 
-user:
+例如：
+
+“黑猫晚上好”
+
+“黑猫是笨蛋”
+
+“你刚才不是这么说的吧？”
+
+如果最后一句明显是在延续角色上一句话，
+也可以是：
+
+character
+
+
+--------------------
+user
+--------------------
 
 消息主要是在描述当前用户自己，
-且没有明显向角色发起互动。
+
+且没有明显向角色或第三方发起交流。
 
 
-third_person:
+--------------------
+third_person
+--------------------
 
-消息主要围绕第三方人物，
-同时没有明确向当前角色提问。
+消息明确在对第三方说话，
+
+或者主要围绕第三方人物进行直接交流。
 
 
-unknown:
+尤其注意：
 
-普通群聊、广播式发言、
+名字出现在句首并形成呼叫结构时，
+通常意味着这个名字对应的人是当前说话对象。
+
+
+例如：
+
+“高晋勋，来玩原神”
+
+target:
+third_person
+
+person:
+高晋勋
+
+
+“王强，你过来一下”
+
+target:
+third_person
+
+person:
+王强
+
+
+--------------------
+unknown
+--------------------
+
+普通群聊、
+广播式发言、
 无法确定具体交流对象。
 
 
@@ -505,34 +800,53 @@ command
 3. person
 ====================
 
-如果消息涉及明确的第三方人物，
-提取人物名字。
+如果消息涉及明确第三方人物，
+
+提取名字。
 
 没有则返回空字符串。
 
 
+注意：
+
+person 表示：
+
+“消息中提到或涉及的人”
+
+而 target 表示：
+
+“当前这句话主要是在对谁说”。
+
+
+二者不能混淆。
+
+
 ====================
-角色名字规则
+最高优先级：当前角色名字
 ====================
 
-当前角色可能拥有：
+如果消息明确使用当前角色：
 
 正式名字
-+
+或
 角色别名
 
+进行：
 
-只要消息明确使用当前角色的正式名字
-或者角色别名呼叫、评价、询问当前角色，
+- 呼叫
+- 提问
+- 评价
+- 调侃
+- 吐槽
+- 指令
+- 互动
 
-应该判断：
+应该：
 
 target = character
 
 
-例如：
-
-如果当前角色叫“黑猫”：
+例如当前角色是黑猫：
 
 “黑猫晚上好”
 
@@ -552,107 +866,47 @@ target:
 character
 
 
-即使消息不是问句，
-
-只要明显是在对当前角色进行评价、
-吐槽、呼叫或者互动，
-
-仍然应该判断：
-
-target = character
-
-
-例如：
+即使不是问句：
 
 “黑猫好笨”
 
-不是普通广播消息，
-
-而是在直接评价黑猫，
-
-因此：
+也属于：
 
 target = character
 
 
 ====================
-群聊规则
+第二优先级：明确第三方呼叫
 ====================
 
-如果 chat_type = "group"：
-
-必须有明确证据，
-才能判断：
-
-target = "character"
-
-
-明确证据包括：
-
-1. 直接叫当前角色正式名字
-
-2. 直接叫当前角色别名
-
-3. 明确 @ 当前角色
-
-4. 明确使用“你”向当前角色提问，
-并且上下文可以确定“你”就是当前角色
-
-5. 明确询问角色本人
-
-6. 明确要求角色做某件事
-
-7. 明确评价、调侃、吐槽当前角色本人
-
-
-例如：
-
-“{character_name}，你今天干嘛？”
-
-target:
-character
-
-
-“{character_name}是笨蛋”
-
-target:
-character
-
-
-“{character_name}晚上好”
-
-target:
-character
-
-
-“@{character_name} 你看看这个”
-
-target:
-character
-
-
-====================
-群聊中的普通聊天
-====================
-
-群聊中，
-
-不要因为一句话：
-
-- 是一个问题
-- 看起来可以回答
-- 角色可能知道答案
-- 角色可能对此感兴趣
-- 角色可以自然接话
-
-就判断为 character。
-
-
-例如：
-
-“王强说他也来，刚好差一个人。”
+如果消息明确以第三方名字作为说话对象，
 
 应该：
+
+target = third_person
+
+
+例如：
+
+“高晋勋，来玩原神”
+
+target:
+third_person
+
+person:
+高晋勋
+
+
+“李兆基，你今晚打游戏吗？”
+
+target:
+third_person
+
+person:
+李兆基
+
+
+“王强你过来一下”
 
 target:
 third_person
@@ -661,67 +915,20 @@ person:
 王强
 
 
-“他俩昨天打得也太搞笑了哈哈哈哈。”
+即使上一句话是当前角色回复的，
 
-应该：
+只要当前用户明确转向新的第三方对象，
 
-target:
-unknown
-
-
-“今天好累。”
-
-如果是在群聊中，
-没有明确对当前角色说：
-
-target:
-unknown
-
-
-“今晚有没有人打游戏？”
-
-如果没有明确叫当前角色：
-
-target:
-unknown
-
-
-“这个游戏也太难了。”
-
-target:
-unknown
+也必须认为对话对象已经切换。
 
 
 ====================
-讨论第三方人物
+讨论第三方 ≠ 对第三方说话
 ====================
 
 例如：
 
-“李兆基今天去打游戏吗？”
-
-如果是在群聊中，
-没有明确向当前角色提问：
-
-target:
-third_person
-
-person:
-李兆基
-
-
-“李兆基昨天那波直接冲进去送了哈哈。”
-
-target:
-third_person
-
-person:
-李兆基
-
-
-但是：
-
-“你觉得李兆基昨天那波怎么样？”
+“你觉得李兆基怎么样？”
 
 如果“你”明确指当前角色：
 
@@ -732,13 +939,105 @@ person:
 李兆基
 
 
-注意：
+这里：
 
-person 表示消息里讨论的人。
+李兆基只是被讨论的人，
 
-target 表示消息是否在直接和角色交流。
+不是被直接呼叫的人。
 
-两者不能混淆。
+
+====================
+连续对话规则
+====================
+
+只有在：
+
+1. 当前消息没有明确叫当前角色名字之外的新对象
+2. 当前消息没有明确呼叫第三方
+3. 上一句确实是当前角色对这个用户的回复
+4. 时间间隔合理
+5. 当前语义能够自然承接角色上一句话
+
+时，
+
+direct_followup 才应该支持：
+
+target = character
+
+
+例如：
+
+角色：
+“今天太阳很好。”
+
+用户：
+“现在明明是晚上。”
+
+target:
+character
+
+
+角色：
+“你才笨呢。”
+
+用户：
+“才没有。”
+
+target:
+character
+
+
+但是：
+
+角色：
+“你才笨呢。”
+
+用户：
+“高晋勋，来玩原神。”
+
+target:
+third_person
+
+
+====================
+群聊普通消息
+====================
+
+如果 chat_type = "group"：
+
+不要因为一句话：
+
+- 是一个问题
+- 角色可以回答
+- 角色知道相关内容
+- 角色对此感兴趣
+- 角色可以自然接话
+
+就判断：
+
+target = character
+
+
+例如：
+
+“今晚有没有人打游戏？”
+
+如果没有明确角色对象：
+
+target:
+unknown
+
+
+“今天好热。”
+
+target:
+unknown
+
+
+“他俩昨天也太搞笑了哈哈哈。”
+
+target:
+unknown
 
 
 ====================
@@ -747,22 +1046,20 @@ target 表示消息是否在直接和角色交流。
 
 如果 chat_type = "private"：
 
-默认用户是在和当前角色交流。
+用户默认是在与当前角色交流。
 
 
 例如：
 
 “今天好累”
 
-通常应该：
+通常：
 
 target:
 character
 
 
 “你觉得李兆基怎么样？”
-
-应该：
 
 target:
 character
@@ -771,43 +1068,40 @@ person:
 李兆基
 
 
-不要仅仅因为提到了第三方人物，
-就把私聊消息判断为 third_person。
+只有非常明确的：
+
+引用、
+转述、
+向第三方说话
+
+才应该改变 target。
 
 
 ====================
-重要原则
+最终判断原则
 ====================
 
-在群聊中：
+群聊 Target 优先级：
 
-如果没有任何证据表明用户在对角色说话，
+1. 明确叫当前角色正式名字 / alias
 
-优先：
+2. 明确叫第三方人物
 
-target = "unknown"
+3. 明确的连续角色对话
 
-而不是：
+4. 其他语义由上下文判断
 
-target = "character"
-
-
-但是：
-
-如果消息明确出现了当前角色名字或别名，
-并且是在呼叫、评价、询问或吐槽角色，
-
-应优先：
-
-target = "character"
+5. 完全不确定时使用 unknown
 
 
-角色是否主动加入普通群聊，
-由另一个 Proactive Behavior 系统决定。
+绝对不要：
 
-你这里只负责判断：
+因为刚才用户在和角色聊天，
 
-“这条消息是不是明确在和角色说话？”
+就认为这个用户接下来的每一句话都仍然是对角色说的。
+
+
+群聊中人物可以随时切换交流对象。
 
 
 ====================
@@ -821,6 +1115,7 @@ target = "character"
 不要使用 Markdown。
 
 不要使用 ```json。
+
 
 格式：
 
@@ -839,13 +1134,17 @@ target = "character"
 
     result = {
 
-        "target": "unknown",
+        "target":
+            "unknown",
 
-        "person": "",
+        "person":
+            "",
 
-        "intent": "chatting",
+        "intent":
+            "chatting",
 
-        "confidence": 0
+        "confidence":
+            0
 
     }
 
@@ -862,7 +1161,8 @@ target = "character"
             .completions
             .create(
 
-                model="deepseek-chat",
+                model=
+                    "deepseek-chat",
 
                 messages=[
 
@@ -872,8 +1172,8 @@ target = "character"
 
                         "content":
                             "你负责理解聊天消息。"
-                            "在群聊中必须严格区分"
-                            "直接对角色说话和普通群聊。"
+                            "必须判断当前消息真正的说话对象。"
+                            "群聊中允许用户随时从角色转向第三方。"
                     },
 
                     {
@@ -950,6 +1250,7 @@ target = "character"
             )
         )
 
+
         end = (
             content.rfind(
                 "}"
@@ -1000,6 +1301,7 @@ target = "character"
                 e
             )
 
+
             print(
                 "Raw Message Analyzer Result:",
                 content
@@ -1008,12 +1310,8 @@ target = "character"
 
     except Exception as e:
 
-        # LLM临时失败时，
-        # 不应该让整个 Character Engine 崩掉。
-        #
-        # 后面仍然可以使用：
-        #
-        # 名字 / alias 确定性规则。
+        # LLM 失败时，
+        # 后面的确定性规则仍然可以工作。
 
         print(
             "Message Analyzer LLM Error:",
@@ -1061,7 +1359,9 @@ target = "character"
 
     if target not in valid_targets:
 
-        target = "unknown"
+        target = (
+            "unknown"
+        )
 
 
     intent = (
@@ -1074,7 +1374,9 @@ target = "character"
 
     if intent not in valid_intents:
 
-        intent = "chatting"
+        intent = (
+            "chatting"
+        )
 
 
     person = (
@@ -1090,9 +1392,12 @@ target = "character"
         person = ""
 
 
-    person = str(
-        person
-    ).strip()
+    person = (
+        str(
+            person
+        )
+        .strip()
+    )
 
 
     try:
@@ -1128,53 +1433,119 @@ target = "character"
 
 
     # ========================================================
-    # Deterministic Target Override
+    # Explicit Third Person
+    # ========================================================
+
+    explicit_third_person = (
+        is_explicit_third_person_addressee(
+
+            message=
+                message,
+
+            person=
+                person,
+
+            character_names=
+                character_names
+
+        )
+    )
+
+
+    # ========================================================
+    # Deterministic Target Resolution
     # ========================================================
     #
-    # 这是非常重要的一层。
+    # 最终优先级：
     #
-    # LLM 负责理解模糊语义，
-    # 但明确名字 / alias 属于确定性证据。
+    # 1. 明确叫当前角色
     #
-    # 如果群聊消息明确包含：
+    # 2. 明确叫第三方
     #
-    # 黑猫
-    # 丛雨
-    # 从雨
-    # ...
+    # 3. 连续对话
     #
-    # 则不能因为 LLM 偶尔判断 unknown
-    # 就导致角色完全不回应。
+    # 4. 保留 LLM 判断
+    #
+    # 这是修复：
+    #
+    # 黑猫：你才笨！
+    # 用户：高晋勋，来玩原神
+    #
+    # 被错误识别成继续和黑猫说话的问题。
     # ========================================================
 
     if chat_type == "group":
 
-      # 明确叫名字 / aliases
-      if explicit_character_name:
+        # ====================================================
+        # 1. 明确叫当前角色
+        # ====================================================
 
-          target = "character"
-          confidence = 1.0
+        if explicit_character_name:
+
+            target = (
+                "character"
+            )
 
 
-      # 用户 → 角色 → 同一用户继续对话
-      elif direct_followup:
+            confidence = (
+                1.0
+            )
 
-          target = "character"
 
-          confidence = max(
-              confidence,
-              0.95
-          )
+        # ====================================================
+        # 2. 明确叫第三方
+        # ====================================================
+
+        elif explicit_third_person:
+
+            target = (
+                "third_person"
+            )
+
+
+            confidence = max(
+
+                confidence,
+
+                0.95
+
+            )
+
+
+        # ====================================================
+        # 3. 连续对话
+        # ====================================================
+        #
+        # direct_followup 只能在：
+        #
+        # 没有明确切换到第三方
+        #
+        # 的情况下生效。
+        #
+        # 如果 LLM 已经非常明确判断 third_person，
+        # 也不要用 direct_followup 覆盖。
+        # ====================================================
+
+        elif direct_followup:
+
+            if target != "third_person":
+
+                target = (
+                    "character"
+                )
+
+
+                confidence = max(
+
+                    confidence,
+
+                    0.95
+
+                )
 
 
     # ========================================================
     # Private Chat Safety
-    # ========================================================
-    #
-    # 私聊默认就是用户在和角色交流。
-    #
-    # 如果 LLM 给了 unknown，
-    # 这里做一次保守修正。
     # ========================================================
 
     if (
@@ -1195,6 +1566,40 @@ target = "character"
             0.8
 
         )
+
+
+    # ========================================================
+    # Debug Info
+    # ========================================================
+    #
+    # 这几项只用于当前调试阶段。
+    #
+    # 等 target 系统稳定后，
+    # 如果觉得日志太多可以删除。
+    # ========================================================
+
+    print(
+        "Target Signals:",
+        {
+            "explicit_character":
+                explicit_character_name,
+
+            "explicit_third_person":
+                explicit_third_person,
+
+            "direct_followup":
+                direct_followup,
+
+            "llm_target":
+                result.get(
+                    "target",
+                    "unknown"
+                ),
+
+            "final_target":
+                target
+        }
+    )
 
 
     # ========================================================

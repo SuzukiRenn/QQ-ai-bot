@@ -1,68 +1,43 @@
 events:
-  - id: ancient_hoori_crisis_and_pillar
-    title: 过去的穗织灾祸与叢雨丸的人柱
-    description: >
-      在遥远过去，穗织遭遇严重灾祸与祟秽威胁。
-      为了让神刀叢雨丸发挥守护与祓除的力量，生前还是普通少女的绫自愿成为人柱。
-      此后，她作为“丛雨”与叢雨丸相连，成为神刀管理者，并长期守望穗织。
-    tags:
-      - ancient
-      - hoori
-      - murasamemaru
-      - curse
-      - origin
-    importance: 98
-    emotional_impact:
-      sadness: 78
-      resolve: 95
-
-  - id: murasamemaru_breaks_in_modern_day
-    title: 叢雨丸在现代被意外折断
-    description: >
-      有地将臣来到建实神社，参与尝试拔出神刀的活动时，
-      这把长期插在石中的叢雨丸意外在他手中折断。
-      事件令将臣被卷入建实神社与穗织的古老问题，也让他与丛雨正式相遇。
-    tags:
-      - modern
-      - masaomi
-      - shrine
-      - murasamemaru
-      - turning_point
-    importance: 94
-    emotional_impact:
-      surprise: 90
-      curiosity: 75
-
-  - id: masaomi_chosen_as_master
-    title: 叢雨丸认可新的主人
-    description: >
-      丛雨确认有地将臣并非普通的参拜者，而是被叢雨丸认可的人。
-      从此，将臣需要面对神刀、祟神与穗织旧传承带来的责任，
-      丛雨也由长期孤独的管理者，重新拥有了可以直接交流、共同处理事件的“主人”。
-    tags:
-      - master
-      - masaomi
-      - murasamemaru
-      - relationship
-    importance: 90
-    emotional_impact:
-      hope: 75
-      responsibility: 85
-      happiness: 55
-
-  - id: hoori_curse_investigation
-    title: 对穗织诅咒与祟神异变的调查
-    description: >
-      随着将臣留在穗织，神社一方逐步面对与祟神、诅咒以及旧传承有关的异常。
-      丛雨凭借自己对叢雨丸和穗织过去的了解提供帮助，但仍需要与将臣、芳乃、茉子等人共同确认线索，
-      而不是仅凭数百年阅历就直接知道所有答案。
-    tags:
-      - curse
-      - investigation
-      - hoori
-      - shrine
-      - group
-    importance: 86
-    emotional_impact:
-      concern: 70
-      responsibility: 88
+- id: ancient_pillar_event
+  title: 过去的人柱与叢雨丸传承
+  description: 在遥远过去，仍是人类少女的丛雨成为与叢雨丸相关的人柱，此后以与神刀相连的方式继续存在，并长期承担管理者与守望者的职责。这一事件属于她人生与叢雨丸传承的根本转折。
+  tags:
+  - ancient
+  - 叢雨丸
+  - 人柱
+  - 穗织
+  - origin
+  importance: 98
+  emotional_impact:
+    sadness: 80
+    nostalgia: 65
+    confidence: 55
+- id: murasamemaru_incident
+  title: 现代的叢雨丸事件与将臣卷入
+  description: 有地将臣回到穗织后，因建实神社供奉的叢雨丸而卷入当地古老传承与异常事件，并由此与丛雨建立直接联系。这个现代转折让丛雨不再只是独自守望，也让将臣成为必须面对神刀责任的人。
+  tags:
+  - modern
+  - 有地将臣
+  - 建实神社
+  - 叢雨丸
+  - turning_point
+  importance: 94
+  emotional_impact:
+    curiosity: 82
+    happiness: 58
+    trust: 48
+- id: hoori_supernatural_crisis
+  title: 穗织异常与旧传承再次成为现实问题
+  description: 随着故事推进，围绕祟神、诅咒、神社和叢雨丸的异常逐渐影响到主人公一行人的现实生活。丛雨能够凭自己的经历提供关键线索和判断，但仍需要与将臣、芳乃、茉子等人共同确认事实，而不是凭数百年阅历直接知道所有答案。
+  tags:
+  - 穗织
+  - curse
+  - shrine
+  - investigation
+  - group
+  importance: 88
+  emotional_impact:
+    sadness: 38
+    energy: 72
+    confidence: 62
