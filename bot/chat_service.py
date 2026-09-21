@@ -294,9 +294,22 @@ def chat(
     # =====================
 
 
+    chat_type = (
+        "group"
+        if group_id
+        else "private"
+    )
+
+    print(
+        "聊天类型:",
+        chat_type
+    )
+
+
     message_context = analyze_message(
         message,
-        character_context["character"]["meta"]["name"]
+        character_context["character"]["meta"]["name"],
+        chat_type=chat_type
     )
 
 
@@ -318,7 +331,8 @@ def chat(
         message,
         relationship,
         emotion_context,
-        message_context
+        message_context,
+        chat_type=chat_type
     )
 
 

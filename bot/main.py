@@ -1,12 +1,17 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 from typing import Optional
-
-from .chat_service import chat
+from .adapters.onebot_adapter import (
+    router as onebot_router
+)
+from .message_handler import handle_message
 
 
 
 app = FastAPI()
+app.include_router(
+    onebot_router
+)
 
 from .runtime import init_runtime
 
@@ -34,22 +39,19 @@ def home():
 
 
 @app.post("/chat")
-def chat_api(
-    req: ChatRequest
-):
+def chat_api(req: ChatRequest):
 
-    answer = chat(
+    result = handle_message(
         req.user_id,
         req.message,
         req.group_id
     )
 
-    if answer is None:
-
-        return {
-            "answer": ""
-        }
-
     return {
-        "answer": answer
+        "action": result.action,
+        "message": result.content,
+        "character_id": result.character_id,
+        "behavior": result.behavior,
+        "priority": result.priority,
+        "should_send": result.should_send
     }

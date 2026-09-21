@@ -53,3 +53,6 @@ runtime = Runtime()
 def init_runtime():
 
     runtime.init()
+
+
+character_manager = runtime.character_manager

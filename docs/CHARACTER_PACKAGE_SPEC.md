@@ -2,7 +2,7 @@
 
 版本：
 
-v1.0
+v1.1
 
 
 ## 1. 概述
@@ -403,6 +403,87 @@ reply_behavior:
 
     private_chat:
 
+
+  proactive:
+
+    enabled: true
+
+    min_context_messages: 2
+
+    min_join_probability: 0.65
+
+    cooldown_seconds: 120
+
+### proactive
+
+作用：
+
+定义角色在群聊中的主动参与倾向。
+
+该字段属于 Character Package v1.1 新增字段。
+
+为了兼容 v1.0 角色：
+
+proactive 为可选字段。
+
+如果角色包没有 proactive，
+Runtime 使用默认主动行为参数。
+
+
+字段说明：
+
+enabled:
+
+是否允许角色主动参与群聊。
+
+类型：
+
+boolean
+
+
+min_context_messages:
+
+角色开始考虑主动发言前，
+至少需要观察到的群成员消息数量。
+
+注意：
+
+只统计 sender_type=user 的消息。
+
+角色自己发送的消息不计入。
+
+
+min_join_probability:
+
+Scene Analyzer 判断当前场景适合角色加入的最低概率。
+
+范围：
+
+0.0 - 1.0
+
+
+cooldown_seconds:
+
+角色实际发送消息后，
+再次主动发言前需要等待的时间。
+
+单位：
+
+秒。
+
+
+示例：
+
+proactive:
+
+  enabled: true
+
+  min_context_messages: 2
+
+  min_join_probability: 0.65
+
+  cooldown_seconds: 120
+
 9. Schema 原则
 角色定义和运行状态分离
 
@@ -469,6 +550,15 @@ Character Package v1
 v1.x:
 
 增加字段，不破坏旧角色。
+
+Character Package v1.1：
+
+新增：
+
+reply_behavior.proactive
+
+该字段为可选字段，
+不会破坏 v1.0 角色包兼容性。
 
 v2:
 

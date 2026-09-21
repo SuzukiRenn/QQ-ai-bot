@@ -49,5 +49,135 @@ def validate_behavior(path):
                 f"missing: reply_behavior.{section}"
             )
 
+        proactive = behavior.get(
+        "proactive"
+    )
+
+
+        if proactive is not None:
+
+            errors.extend(
+                validate_proactive(
+                    proactive
+                )
+            )
+
+
+    return errors
+
+
+def validate_proactive(
+    proactive
+):
+
+    errors = []
+
+
+    if not isinstance(
+        proactive,
+        dict
+    ):
+
+        return [
+            "reply_behavior.proactive must be a mapping"
+        ]
+
+
+    # enabled
+
+    if "enabled" in proactive:
+
+        if not isinstance(
+            proactive["enabled"],
+            bool
+        ):
+
+            errors.append(
+                "reply_behavior.proactive.enabled "
+                "must be boolean"
+            )
+
+
+    # min_context_messages
+
+    if "min_context_messages" in proactive:
+
+        value = proactive[
+            "min_context_messages"
+        ]
+
+        if (
+            not isinstance(
+                value,
+                int
+            )
+            or isinstance(
+                value,
+                bool
+            )
+            or value < 1
+        ):
+
+            errors.append(
+                "reply_behavior.proactive."
+                "min_context_messages "
+                "must be integer >= 1"
+            )
+
+
+    # min_join_probability
+
+    if "min_join_probability" in proactive:
+
+        value = proactive[
+            "min_join_probability"
+        ]
+
+        if (
+            isinstance(
+                value,
+                bool
+            )
+            or not isinstance(
+                value,
+                (int, float)
+            )
+            or value < 0
+            or value > 1
+        ):
+
+            errors.append(
+                "reply_behavior.proactive."
+                "min_join_probability "
+                "must be between 0 and 1"
+            )
+
+
+    # cooldown_seconds
+
+    if "cooldown_seconds" in proactive:
+
+        value = proactive[
+            "cooldown_seconds"
+        ]
+
+        if (
+            not isinstance(
+                value,
+                int
+            )
+            or isinstance(
+                value,
+                bool
+            )
+            or value < 0
+        ):
+
+            errors.append(
+                "reply_behavior.proactive."
+                "cooldown_seconds "
+                "must be integer >= 0"
+            )
+
 
     return errors

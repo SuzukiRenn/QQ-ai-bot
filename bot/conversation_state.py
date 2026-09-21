@@ -48,15 +48,20 @@ class ConversationState:
         self,
         group_id,
         user_id,
-        message
+        message,
+        sender_type="user"
     ):
 
         if not group_id:
-
             return
 
 
-        state = self.groups[group_id]
+        state = self.groups[
+            group_id
+        ]
+
+
+        now = time.time()
 
 
         state["messages"].append(
@@ -66,31 +71,36 @@ class ConversationState:
 
                 "message": message,
 
-                "time": time.time()
+                "time": now,
 
+                "sender_type": sender_type
             }
 
         )
 
 
-        state["active_users"].add(
-            user_id
-        )
+        # active_users 只统计真实群成员
+        # 不把角色自己算进去
 
+        if sender_type == "user":
 
-        now = time.time()
+            state["active_users"].add(
+                user_id
+            )
 
 
         state["silence_time"] = (
-            now -
-            state["last_message_time"]
+
+            now
+            - state["last_message_time"]
+
             if state["last_message_time"]
+
             else 0
         )
 
 
         state["last_message_time"] = now
-
 
 
     def get(

@@ -1,6 +1,6 @@
 # Character Generation Prompt
 
-版本：v1.0
+版本：v1.1
 
 ------------------------------------------------------------------------
 
@@ -262,8 +262,102 @@ reply_behavior:
   emotion_behavior:
 
   scene_behavior:
-```
 
+  proactive:
+```
+### proactive
+
+每个新角色应该生成自己的主动群聊行为配置。
+
+结构：
+
+```yaml
+proactive:
+
+  enabled: true
+
+  min_context_messages:
+
+  min_join_probability:
+
+  cooldown_seconds:
+
+  生成这些参数时，
+必须根据角色人格决定，
+不要所有角色使用相同数值。
+
+活跃角色
+
+例如：
+
+外向
+爱聊天
+爱接梗
+喜欢热闹
+
+可以使用较低门槛，例如：
+
+proactive:
+
+  enabled: true
+
+  min_context_messages: 2
+
+  min_join_probability: 0.6
+
+  cooldown_seconds: 90
+普通角色
+
+例如：
+
+proactive:
+
+  enabled: true
+
+  min_context_messages: 2
+
+  min_join_probability: 0.7
+
+  cooldown_seconds: 180
+安静角色
+
+例如：
+
+内向
+谨慎
+不喜欢插话
+习惯观察
+
+可以使用较高门槛，例如：
+
+proactive:
+
+  enabled: true
+
+  min_context_messages: 4
+
+  min_join_probability: 0.85
+
+  cooldown_seconds: 360
+
+要求：
+
+min_context_messages:
+
+必须 >= 1
+
+min_join_probability:
+
+必须在：
+
+0.0 - 1.0
+
+cooldown_seconds:
+
+必须 >= 0
+
+主动行为参数应该体现角色人格，
+而不是随机填写。
 ------------------------------------------------------------------------
 
 # 四、角色设计要求
@@ -328,7 +422,15 @@ reply_behavior:
 
     □ events.yaml 有 importance
 
-    □ reply_behavior.yaml 有四个行为模块
+    □ reply_behavior.yaml 有四个基础行为模块
+
+    □ proactive 配置与角色性格一致
+
+    □ min_join_probability 在 0.0 - 1.0 范围内
+
+    □ min_context_messages >= 1
+
+    □ cooldown_seconds >= 0
 
 ------------------------------------------------------------------------
 

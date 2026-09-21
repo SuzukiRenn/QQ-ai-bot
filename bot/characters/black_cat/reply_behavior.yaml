@@ -110,3 +110,20 @@ reply_behavior:
       description: "私聊环境"
       rules:
         - 可以展开更多交流
+
+
+  proactive:
+
+    enabled: true
+
+    # 至少看到多少条群成员消息，
+    # 才考虑主动加入
+    min_context_messages: 2
+
+    # SceneAnalyzer 的加入概率
+    # 至少达到多少才考虑发言
+    min_join_probability: 0.65
+
+    # 角色真正说过话后，
+    # 多久内不再主动插话
+    cooldown_seconds: 120

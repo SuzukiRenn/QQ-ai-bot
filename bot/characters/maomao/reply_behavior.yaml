@@ -121,3 +121,14 @@ reply_behavior:
       rules:
         - 可以展开更多交流
         - 可以提供更详细回答
+
+
+  proactive:
+
+    enabled: true
+
+    min_context_messages: 3
+
+    min_join_probability: 0.78
+
+    cooldown_seconds: 240
