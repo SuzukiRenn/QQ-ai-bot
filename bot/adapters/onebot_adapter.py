@@ -10,6 +10,9 @@ from fastapi import (
 from ..message_handler import handle_message
 from ..outbound_lifecycle import commit_sent_message
 
+from ..admin_commands import (
+    handle_admin_command
+)
 
 router = APIRouter()
 
@@ -463,6 +466,88 @@ async def process_group_message_locked(
 
 
     if not raw_message:
+
+        return
+
+
+    # ========================================================
+    # Admin Command
+    # ========================================================
+    #
+    # 管理命令在 Character Engine 之前处理。
+    #
+    # 因此：
+    #
+    # - 不写入 ConversationState
+    # - 不调用 DeepSeek
+    # - 不影响角色关系 / 情绪
+    # - 不触发 proactive cooldown
+    # ========================================================
+
+    command_response = handle_admin_command(
+
+        user_id=user_id,
+
+        group_id=group_id,
+
+        message=raw_message
+
+    )
+
+
+    if command_response is not None:
+
+        print(
+            "Admin Command:",
+            {
+                "user_id": user_id,
+                "group_id": group_id,
+                "command": raw_message
+            }
+        )
+
+
+        try:
+
+            success, response = (
+                await send_group_message(
+
+                    group_id=group_id,
+
+                    message=command_response
+
+                )
+            )
+
+
+        except Exception as e:
+
+            print(
+                "❌ Admin Command Send Error:",
+                repr(e)
+            )
+
+            return
+
+
+        if success:
+
+            print(
+                "✅ Admin Command Response Sent"
+            )
+
+        else:
+
+            print(
+                "❌ Admin Command Response Failed:",
+                response
+            )
+
+
+        # 非常重要：
+        # 管理命令到此结束。
+        #
+        # 绝不能继续进入 handle_message()
 
         return
 

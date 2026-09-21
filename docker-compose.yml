@@ -15,3 +15,15 @@ services:
       - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY}
     depends_on:
       - redis
+      
+environment:
+  DEEPSEEK_API_KEY: ${DEEPSEEK_API_KEY}
+
+  REDIS_HOST: redis
+  REDIS_PORT: 6379
+
+  BOT_ADMIN_QQ_IDS: ${BOT_ADMIN_QQ_IDS}
+
+  DEFAULT_CHARACTER_ID: ${DEFAULT_CHARACTER_ID:-black_cat}
+
+  TZ: ${TZ:-Asia/Shanghai}

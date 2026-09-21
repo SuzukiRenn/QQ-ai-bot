@@ -409,6 +409,23 @@ class ProactiveBehaviorEngine:
             key
         ] = time.time()
 
+    def clear_cooldown(
+        self,
+        character_id,
+        group_id=None
+    ):
+
+        key = self._cooldown_key(
+            character_id,
+            group_id
+        )
+
+
+        self.last_active.pop(
+            key,
+            None
+        )
+
 
     # =====================
     # Reject

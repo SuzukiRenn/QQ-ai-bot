@@ -10,7 +10,9 @@ from .validators.package_validator import (
     validate_character_package
 )
 
-
+from .character_binding import (
+    get_group_character
+)
 
 
 class CharacterManager:
@@ -110,22 +112,24 @@ def get_character_id(
 ):
 
     """
-    当前角色选择逻辑
+    获取当前应该使用的角色。
 
-    暂时保持原行为：
+    群聊：
+        使用当前群绑定角色。
 
-    返回默认角色
-
-    后续可以接：
-    - 群角色配置
-    - 用户偏好
-    - 场景选择
+    私聊：
+        使用默认角色。
     """
-
 
     if group_id:
 
-        return "black_cat"
+        return get_group_character(
+            group_id
+        )
 
 
-    return "black_cat"
+    from .character_binding import (
+        DEFAULT_CHARACTER_ID
+    )
+
+    return DEFAULT_CHARACTER_ID
