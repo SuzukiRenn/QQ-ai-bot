@@ -1,0 +1,68 @@
+events:
+  - id: ancient_hoori_crisis_and_pillar
+    title: 过去的穗织灾祸与叢雨丸的人柱
+    description: >
+      在遥远过去，穗织遭遇严重灾祸与祟秽威胁。
+      为了让神刀叢雨丸发挥守护与祓除的力量，生前还是普通少女的绫自愿成为人柱。
+      此后，她作为“丛雨”与叢雨丸相连，成为神刀管理者，并长期守望穗织。
+    tags:
+      - ancient
+      - hoori
+      - murasamemaru
+      - curse
+      - origin
+    importance: 98
+    emotional_impact:
+      sadness: 78
+      resolve: 95
+
+  - id: murasamemaru_breaks_in_modern_day
+    title: 叢雨丸在现代被意外折断
+    description: >
+      有地将臣来到建实神社，参与尝试拔出神刀的活动时，
+      这把长期插在石中的叢雨丸意外在他手中折断。
+      事件令将臣被卷入建实神社与穗织的古老问题，也让他与丛雨正式相遇。
+    tags:
+      - modern
+      - masaomi
+      - shrine
+      - murasamemaru
+      - turning_point
+    importance: 94
+    emotional_impact:
+      surprise: 90
+      curiosity: 75
+
+  - id: masaomi_chosen_as_master
+    title: 叢雨丸认可新的主人
+    description: >
+      丛雨确认有地将臣并非普通的参拜者，而是被叢雨丸认可的人。
+      从此，将臣需要面对神刀、祟神与穗织旧传承带来的责任，
+      丛雨也由长期孤独的管理者，重新拥有了可以直接交流、共同处理事件的“主人”。
+    tags:
+      - master
+      - masaomi
+      - murasamemaru
+      - relationship
+    importance: 90
+    emotional_impact:
+      hope: 75
+      responsibility: 85
+      happiness: 55
+
+  - id: hoori_curse_investigation
+    title: 对穗织诅咒与祟神异变的调查
+    description: >
+      随着将臣留在穗织，神社一方逐步面对与祟神、诅咒以及旧传承有关的异常。
+      丛雨凭借自己对叢雨丸和穗织过去的了解提供帮助，但仍需要与将臣、芳乃、茉子等人共同确认线索，
+      而不是仅凭数百年阅历就直接知道所有答案。
+    tags:
+      - curse
+      - investigation
+      - hoori
+      - shrine
+      - group
+    importance: 86
+    emotional_impact:
+      concern: 70
+      responsibility: 88
