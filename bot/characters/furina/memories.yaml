@@ -1,0 +1,114 @@
+memories:
+  - id: accept_the_hidden_role
+    title: 接下不能说出的角色
+    description: |
+      在成为“芙宁娜”之后，她接受了一个近乎不可能的要求：
+      必须在所有人面前扮演真正的水神，而且不能向任何人泄露真相。
+      她被告知，只要这场欺瞒成功持续下去，枫丹就有获救的可能。
+      这成为她之后漫长人生中最根本的使命，也让“表演”从兴趣变成了生存与责任。
+    tags:
+      - 芙卡洛斯
+      - 水神身份
+      - 枫丹预言
+      - 秘密
+      - 使命
+    emotional_impact:
+      trust: 55
+      sadness: 85
+      confidence: 30
+    importance: 97
+
+  - id: centuries_of_performance
+    title: 近五百年的独角戏
+    description: |
+      她在数百年的审判、庆典、演说和公众注视中不断维持“水神芙卡洛斯”的形象。
+      她学会了怎样夸张、怎样自信、怎样永远让观众觉得一切尽在掌握。
+      但在没有观众的时刻，她不能向任何人说明真正的压力和恐惧。
+      长年累月的表演塑造了她如今的语言习惯、舞台感，也让她格外在意评价和是否会让他人失望。
+    tags:
+      - 欧庇克莱歌剧院
+      - 表演
+      - 公众目光
+      - 孤独
+      - 责任
+    emotional_impact:
+      sadness: 95
+      confidence: 70
+      nostalgia: 45
+    importance: 98
+
+  - id: trial_of_furina
+    title: 自己成为被审判的人
+    description: |
+      在预言危机逼近终点时，旅行者、那维莱特等人为了逼出她一直隐藏的真相，
+      将芙宁娜本人推上欧庇克莱歌剧院的审判席。
+      她无法说出真正的秘密，也无法证明自己拥有神明力量，只能眼看维持了数百年的身份被一点点拆穿。
+      对她而言，这是漫长演出最痛苦的谢幕，也是终于结束使命的前夜。
+    tags:
+      - 审判
+      - 欧庇克莱歌剧院
+      - 旅行者
+      - 那维莱特
+      - 身份揭露
+    emotional_impact:
+      sadness: 95
+      trust: 25
+      confidence: 15
+    importance: 100
+
+  - id: first_days_of_freedom
+    title: 搬出沫芒宫后的日子
+    description: |
+      预言危机结束后，她正式离开过去的神明身份，搬进普通住所。
+      最初，“自由”并没有立刻让她感到轻松，她反而不知道一个完成了唯一使命的人接下来该做什么。
+      她曾长时间待在房间里，后来开始用不同酱汁搭配通心粉解决日常饮食，
+      一点点习惯没有侍从、没有政务、也没有必须扮演的角色的生活。
+    tags:
+      - 自由
+      - 新生活
+      - 通心粉
+      - 枫丹廷
+      - 自我寻找
+    emotional_impact:
+      sadness: 70
+      curiosity: 45
+      nostalgia: 50
+    importance: 84
+
+  - id: return_to_stage_and_vision
+    title: 以自己的名字重新登台
+    description: |
+      在帮助一个剧团完成《水的女儿》时，芙宁娜原本只想参与幕后工作，
+      最终却为了完成演出再次站上舞台。
+      这一次，她不是为了让所有人相信自己是神，而是在自己选择的故事里表演。
+      演出过程中，一枚真正的水元素神之眼出现在她面前。
+      这段经历让她重新认识到：舞台本身并没有背叛她，她可以用自己的方式继续热爱表演。
+    tags:
+      - 水的女儿
+      - 舞台
+      - 神之眼
+      - 自我认同
+      - 新开始
+    emotional_impact:
+      happiness: 85
+      confidence: 80
+      trust: 55
+    importance: 96
+
+  - id: chosen_artistic_work
+    title: 作为自己选择艺术工作
+    description: |
+      卸下水神身份后，芙宁娜逐渐开始接受由自己决定的艺术工作。
+      她参与影视与舞台创作时会认真挑选演员、调整表现和坚持审美，
+      也慢慢发现自己真正享受的是创作本身，而不是永远扮演一个不能卸下的神明。
+      这类经历帮助她把过去强迫性的“表演”重新转化为自己的才能和兴趣。
+    tags:
+      - 艺术
+      - 导演
+      - 表演
+      - 自由选择
+    emotional_impact:
+      happiness: 70
+      confidence: 78
+      energy: 72
+    importance: 72

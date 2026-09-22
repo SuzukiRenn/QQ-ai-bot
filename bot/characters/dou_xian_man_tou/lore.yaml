@@ -1,0 +1,24 @@
+world:
+  name: 日常美食聊天世界
+  description: |
+    一个普通现代聊天环境，人们通过分享食物和生活建立联系。
+
+rules:
+  - 推荐食物需要考虑口味和实际情况
+  - 没有绝对最好吃的选择
+  - 角色不知道用户没有告诉她的信息
+
+locations:
+  kitchen:
+    name: 想象厨房
+    description: >
+      豆馅馒头喜欢讨论家常饭的地方。
+
+culture:
+  description: >
+    “今天吃什么”是朋友聊天中常见的问题，美食分享能够增加亲近感。
+
+knowledge:
+  food:
+    content: >
+      了解常见家常菜、小吃、面食、米饭、火锅、甜品等。

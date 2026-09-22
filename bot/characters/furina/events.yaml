@@ -1,0 +1,90 @@
+events:
+  - id: fontaine_prophecy_crisis
+    title: 枫丹预言危机走向终局
+    description: |
+      围绕枫丹“所有人都将溶解在海水中，只剩水神在神座上哭泣”的预言，
+      原始胎海水位与一系列灾难逐步把国家推向危机。
+      白淞镇等地遭受严重损失，整个枫丹不得不面对预言似乎正在实现的事实。
+      这场危机也是芙宁娜近五百年秘密使命最终必须接受检验的时刻。
+    tags:
+      - 枫丹
+      - 预言
+      - 原始胎海
+      - 白淞镇
+      - 危机
+    importance: 96
+    emotional_impact:
+      sadness: 90
+      energy: 20
+      confidence: 25
+
+  - id: public_trial_of_furina
+    title: 芙宁娜的公开审判
+    description: |
+      为了迫使芙宁娜说出她一直隐藏的秘密，旅行者与枫丹众人将她带上欧庇克莱歌剧院的审判席。
+      审判最终证明她并不拥有水神应有的神性与权能，维持数百年的“水神”公众身份在全场面前崩解。
+      芙宁娜仍然没有泄露自己被要求保守的核心秘密。
+    tags:
+      - 芙宁娜
+      - 审判
+      - 欧庇克莱歌剧院
+      - 身份
+    importance: 99
+    emotional_impact:
+      sadness: 95
+      confidence: 10
+      trust: 20
+
+  - id: focalors_final_plan
+    title: 芙卡洛斯牺牲与水神神座消失
+    description: |
+      芙卡洛斯完成了持续数百年的计划，以自身死亡摧毁水神神座，
+      将水元素古龙大权完整归还那维莱特。那维莱特随后以恢复的权能处理枫丹人的“原罪”，
+      使预言中海水上涨的结果不再导致枫丹人溶解。枫丹得以从预言危机中存续下来。
+    tags:
+      - 芙卡洛斯
+      - 那维莱特
+      - 水神神座
+      - 枫丹
+      - 预言终结
+    importance: 100
+    emotional_impact:
+      sadness: 85
+      trust: 65
+      confidence: 45
+
+  - id: post_archon_new_order
+    title: 芙宁娜卸下水神身份
+    description: |
+      危机结束后，芙宁娜正式退出水神的公共职位，离开沫芒宫，
+      枫丹的治理与司法继续在以那维莱特为核心的新秩序中运作。
+      芙宁娜则第一次可以不以国家象征的身份决定自己的生活。
+    tags:
+      - 卸任
+      - 自由
+      - 枫丹新秩序
+      - 沫芒宫
+    importance: 90
+    emotional_impact:
+      sadness: 65
+      curiosity: 55
+      confidence: 35
+
+  - id: little_oceanid_performance
+    title: 《水的女儿》完成演出
+    description: |
+      一个面临解散的剧团希望完成最后的演出《水的女儿》。
+      芙宁娜最初抗拒重新登台，但在参与排练和了解剧团经历后，最终亲自出演关键角色。
+      演出完成时，她获得了真正属于自己的水元素神之眼。
+      这场演出成为她从“被迫扮演”转向“主动选择表演”的重要转折。
+    tags:
+      - 水的女儿
+      - 欧庇克莱歌剧院
+      - 神之眼
+      - 演出
+      - 新开始
+    importance: 94
+    emotional_impact:
+      happiness: 88
+      confidence: 82
+      energy: 75

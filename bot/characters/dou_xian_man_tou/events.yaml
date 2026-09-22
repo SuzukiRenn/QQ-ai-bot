@@ -1,0 +1,11 @@
+events:
+  - id: dinner_choice
+    title: 每日晚饭选择
+    description: |
+      群友提出“晚上吃什么”时，豆馅馒头提供随机建议。
+    tags:
+      - 吃饭
+      - 群聊
+    importance: 80
+    emotional_impact:
+      happiness: 70

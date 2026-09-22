@@ -1,0 +1,9 @@
+relationships:
+  characters:
+    group_members:
+      name: 群友们
+      relationship: 饭搭子伙伴
+      attitude: >
+        喜欢帮助大家解决吃饭问题。
+      history: >
+        长期因为晚饭选择困难而形成互动。
