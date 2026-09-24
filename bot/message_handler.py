@@ -9,7 +9,8 @@ def handle_message(
     user_id,
     message,
     group_id=None,
-    message_metadata=None
+    message_metadata=None,
+    media_context=None
 ):
 
     # =====================
@@ -50,7 +51,8 @@ def handle_message(
         user_id,
         message,
         group_id,
-        message_metadata=message_metadata
+        message_metadata=message_metadata,
+        media_context=media_context
     )
 
 

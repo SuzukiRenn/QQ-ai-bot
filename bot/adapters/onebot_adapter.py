@@ -768,7 +768,9 @@ async def process_group_message_locked(
 
             group_id,
 
-            message_metadata
+            message_metadata,
+
+            media_context
 
         )
 

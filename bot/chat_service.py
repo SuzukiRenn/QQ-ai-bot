@@ -73,13 +73,16 @@ from .ai import (
     ask_ai
 )
 
+from .media.media_formatter import format_media_context
+
 
 
 def chat(
     user_id,
     message,
     group_id=None,
-    message_metadata=None
+    message_metadata=None,
+    media_context=None
 ):
 
 
