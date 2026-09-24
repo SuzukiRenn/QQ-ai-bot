@@ -55,6 +55,7 @@ def load_character_package(
         relationships:
         events:
         reply_behavior:
+        dialogue_style:
     }
 
     """
@@ -146,6 +147,22 @@ def load_character_package(
             )
             .get(
                 "reply_behavior",
+                {}
+            ),
+
+
+        # Dialogue Style System v1
+        # 可选文件：旧角色包没有该文件时保持兼容。
+        "dialogue_style":
+
+            load_yaml(
+                os.path.join(
+                    base,
+                    "dialogue_examples.yaml"
+                )
+            )
+            .get(
+                "dialogue_style",
                 {}
             )
 

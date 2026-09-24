@@ -78,7 +78,8 @@ from .ai import (
 def chat(
     user_id,
     message,
-    group_id=None
+    group_id=None,
+    message_metadata=None
 ):
 
 
@@ -381,7 +382,10 @@ def chat(
             user_id,
 
         character_id=
-            character_id
+            character_id,
+
+        message_metadata=
+            message_metadata
 
     )
 
@@ -458,7 +462,13 @@ def chat(
             message_context,
 
         reply_type=
-            reply_type
+            reply_type,
+
+        scene_type=(
+            "group_chat"
+            if chat_type == "group"
+            else "private_chat"
+        )
 
     )
 

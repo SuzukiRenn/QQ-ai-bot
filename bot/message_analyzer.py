@@ -454,7 +454,8 @@ def analyze_message(
     chat_type="private",
     recent_messages=None,
     current_user_id=None,
-    character_id=None
+    character_id=None,
+    message_metadata=None
 ):
 
     character_aliases = (
@@ -467,6 +468,112 @@ def analyze_message(
         recent_messages
         or []
     )
+
+
+    message_metadata = (
+        message_metadata
+        or {}
+    )
+
+
+    # ========================================================
+    # OneBot Native Target Signals
+    # ========================================================
+    #
+    # OneBot 结构化 @ / reply 信号是确定性信息，
+    # 优先级高于角色名、连续对话和 LLM。
+    #
+    # @机器人          -> character
+    # 回复/引用机器人   -> character
+    # @其他群成员      -> third_person
+    #
+    # 这样不仅更准确，也能避免这些确定性消息继续消耗
+    # MessageAnalyzer 的 LLM 请求。
+    # ========================================================
+
+    if chat_type == "group":
+
+        if message_metadata.get("at_bot"):
+
+            print(
+                "Target Signals:",
+                {
+                    "at_bot": True,
+                    "at_other_users": message_metadata.get("at_other_users", []),
+                    "reply_to_bot": bool(message_metadata.get("reply_to_bot")),
+                    "reply_message_id": message_metadata.get("reply_message_id"),
+                    "reply_sender_user_id": message_metadata.get("reply_sender_user_id"),
+                    "explicit_character": False,
+                    "explicit_third_person": False,
+                    "direct_followup": False,
+                    "llm_target": "skipped",
+                    "final_target": "character"
+                }
+            )
+
+            return {
+                "target": "character",
+                "person": "",
+                "intent": "chatting",
+                "confidence": 1.0
+            }
+
+
+        if message_metadata.get("reply_to_bot"):
+
+            print(
+                "Target Signals:",
+                {
+                    "at_bot": False,
+                    "at_other_users": message_metadata.get("at_other_users", []),
+                    "reply_to_bot": True,
+                    "reply_message_id": message_metadata.get("reply_message_id"),
+                    "reply_sender_user_id": message_metadata.get("reply_sender_user_id"),
+                    "explicit_character": False,
+                    "explicit_third_person": False,
+                    "direct_followup": False,
+                    "llm_target": "skipped",
+                    "final_target": "character"
+                }
+            )
+
+            return {
+                "target": "character",
+                "person": "",
+                "intent": "chatting",
+                "confidence": 1.0
+            }
+
+
+        at_other_users = (
+            message_metadata.get("at_other_users")
+            or []
+        )
+
+        if at_other_users:
+
+            print(
+                "Target Signals:",
+                {
+                    "at_bot": False,
+                    "at_other_users": at_other_users,
+                    "reply_to_bot": bool(message_metadata.get("reply_to_bot")),
+                    "reply_message_id": message_metadata.get("reply_message_id"),
+                    "reply_sender_user_id": message_metadata.get("reply_sender_user_id"),
+                    "explicit_character": False,
+                    "explicit_third_person": True,
+                    "direct_followup": False,
+                    "llm_target": "skipped",
+                    "final_target": "third_person"
+                }
+            )
+
+            return {
+                "target": "third_person",
+                "person": str(at_other_users[0]),
+                "intent": "chatting",
+                "confidence": 1.0
+            }
 
 
     # ========================================================
@@ -1581,6 +1688,21 @@ person:
     print(
         "Target Signals:",
         {
+            "at_bot":
+                bool(message_metadata.get("at_bot")),
+
+            "at_other_users":
+                message_metadata.get("at_other_users", []),
+
+            "reply_to_bot":
+                bool(message_metadata.get("reply_to_bot")),
+
+            "reply_message_id":
+                message_metadata.get("reply_message_id"),
+
+            "reply_sender_user_id":
+                message_metadata.get("reply_sender_user_id"),
+
             "explicit_character":
                 explicit_character_name,
 

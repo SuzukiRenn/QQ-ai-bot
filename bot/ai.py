@@ -8,6 +8,11 @@ from .prompt import build_prompt
 
 from .memory_retriever import retrieve_memories
 
+from .dialogue_retriever import (
+    retrieve_dialogue_examples,
+    get_anti_patterns,
+)
+
 from .proactive_prompt import (
     build_proactive_prompt
 )
@@ -25,7 +30,8 @@ def ask_ai(
     relationship_level=None,
     character_context=None,
     message_context=None,
-    reply_type=None
+    reply_type=None,
+    scene_type=None
 ):
 
 
@@ -84,6 +90,40 @@ def ask_ai(
     )
 
 
+    dialogue_style = character_context.get(
+        "dialogue_style",
+        {}
+    )
+
+
+    selected_dialogue_examples = retrieve_dialogue_examples(
+
+        history[-1]["content"] if history else "",
+
+        dialogue_style,
+
+        reply_type=reply_type,
+
+        emotion=(
+            emotion_context.get("mood")
+            if emotion_context
+            else None
+        ),
+
+        scene=scene_type,
+
+        relationship_level=relationship_level,
+
+        top_k=4
+
+    )
+
+
+    dialogue_anti_patterns = get_anti_patterns(
+        dialogue_style
+    )
+
+
 
     system_prompt = build_prompt(
 
@@ -108,7 +148,11 @@ def ask_ai(
         message_context=message_context,
 
 
-        reply_type=reply_type
+        reply_type=reply_type,
+
+        dialogue_examples=selected_dialogue_examples,
+
+        dialogue_anti_patterns=dialogue_anti_patterns
 
     )
 

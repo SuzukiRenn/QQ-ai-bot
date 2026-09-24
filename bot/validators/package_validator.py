@@ -26,6 +26,10 @@ from .behavior_validator import (
     validate_behavior
 )
 
+from .dialogue_validator import (
+    validate_dialogue_style
+)
+
 
 
 BASE_DIR = os.path.dirname(
@@ -79,6 +83,14 @@ FILES = {
 
 }
 
+
+OPTIONAL_FILES = {
+
+    "dialogue_examples.yaml":
+
+    validate_dialogue_style
+
+}
 
 
 def validate_character_package(
@@ -176,6 +188,29 @@ def validate_character_package(
                 f"✅ {filename}"
             )
 
+
+
+    # Dialogue Style System v1 是可选扩展。
+    # 没有该文件的旧角色包仍保持 v1.1 兼容；存在时则进行校验。
+    for filename, validator in OPTIONAL_FILES.items():
+
+        path = os.path.join(
+            character_path,
+            filename
+        )
+
+        if not os.path.exists(path):
+            continue
+
+        errors = validator(path)
+
+        if errors:
+            print(f"❌ {filename}")
+            for error in errors:
+                print("   -", error)
+            success = False
+        else:
+            print(f"✅ {filename} (optional)")
 
 
     print()

@@ -8,7 +8,8 @@ from .message_result import MessageResult
 def handle_message(
     user_id,
     message,
-    group_id=None
+    group_id=None,
+    message_metadata=None
 ):
 
     # =====================
@@ -48,7 +49,8 @@ def handle_message(
     answer = chat(
         user_id,
         message,
-        group_id
+        group_id,
+        message_metadata=message_metadata
     )
 
 
@@ -82,7 +84,45 @@ def handle_message(
 
 
     # =====================
-    # 5. Proactive System
+    # 5. Proactive Target Guard
+    # =====================
+    #
+    # 用户明确 @ 其他群成员时，
+    # 这是一个强确定性“正在和别人说话”的信号。
+    #
+    # 即使 Reactive 已经保持沉默，
+    # 也不能让 Proactive 再绕回来插话。
+    #
+    # 如果同一条消息同时 @ 机器人，
+    # 则交给 Reactive 正常处理；
+    # 这里不拦截。
+    # =====================
+
+    message_metadata = (
+        message_metadata
+        or {}
+    )
+
+    if (
+        message_metadata.get("at_other_users")
+        and not message_metadata.get("at_bot")
+    ):
+        print(
+            "Proactive Target Guard:",
+            "message explicitly @ other member(s)",
+            message_metadata.get("at_other_users")
+        )
+
+        return MessageResult(
+            action="none",
+            character_id=character_id,
+            behavior="observe",
+            priority=0
+        )
+
+
+    # =====================
+    # 6. Proactive System
     # =====================
 
     try:

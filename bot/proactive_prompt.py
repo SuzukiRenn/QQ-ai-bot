@@ -2,6 +2,10 @@ from .prompt import build_prompt
 from .conversation_formatter import (
     format_conversation_messages
 )
+from .dialogue_retriever import (
+    retrieve_dialogue_examples,
+    get_anti_patterns,
+)
 
 
 def build_proactive_prompt(
@@ -49,9 +53,31 @@ def build_proactive_prompt(
     }
 
 
-    # 复用现有角色 Prompt
-    # 这样人格、世界观、reply_behavior
-    # 不需要重新写一套。
+    dialogue_style = character_context.get(
+        "dialogue_style",
+        {}
+    )
+
+
+    selected_dialogue_examples = retrieve_dialogue_examples(
+
+        scene_context.get("topic", ""),
+
+        dialogue_style,
+
+        reply_type=behavior,
+
+        emotion=scene_context.get("emotion"),
+
+        scene=scene_context.get("scene"),
+
+        top_k=4
+
+    )
+
+
+    # 复用现有角色 Prompt。
+    # Dialogue Style 同样作用于主动发言。
 
     base_prompt = build_prompt(
 
@@ -59,7 +85,13 @@ def build_proactive_prompt(
 
         knowledge=knowledge,
 
-        reply_type=behavior
+        reply_type=behavior,
+
+        dialogue_examples=selected_dialogue_examples,
+
+        dialogue_anti_patterns=get_anti_patterns(
+            dialogue_style
+        )
 
     )
 

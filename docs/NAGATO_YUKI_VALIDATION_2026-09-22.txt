@@ -1,0 +1,149 @@
+QQ-ai-bot 长门有希角色包 v1 — 离线验收记录
+日期：2026-09-22
+检查环境：Python 3.13.5 / PyYAML 6.0.3
+范围：上传原项目 + @修复 + ReplyToBot修复 + Dialogue Style System v1。
+未连接生产服务器、QQ、Redis或DeepSeek；没有进行回复质量测量。
+新增测试文件 py_compile：通过。六核心YAML：通过。
+原有 109 个文件的字节哈希核对：未发生改动。
+17 + 20 + 15 = 52 项专项及指定回归测试通过，分别执行，未声称全量回归。
+初次新测试夹具未传relationship字典，导致关系段未注入；按真实接口补齐夹具后重新通过。未为此修改引擎。
+
+===== Package Validator =====
+==================================================
+Character Package: nagato_yuki
+==================================================
+✅ card.yaml
+✅ lore.yaml
+
+Checking: /mnt/data/nagato_work/project/bot/characters/nagato_yuki/memories.yaml
+✅ memories.yaml
+✅ relationships.yaml
+✅ events.yaml
+✅ reply_behavior.yaml
+
+🎉 Character Package Valid
+
+===== 长门专项 =====
+test_actual_package_validator_returns_true (tests.test_nagato_yuki_package.NagatoYukiPackageTests.test_actual_package_validator_returns_true) ... ok
+test_aliases_do_not_match_common_hope_phrases (tests.test_nagato_yuki_package.NagatoYukiPackageTests.test_aliases_do_not_match_common_hope_phrases) ... ok
+test_behavior_modes_and_bilingual_relationship_levels (tests.test_nagato_yuki_package.NagatoYukiPackageTests.test_behavior_modes_and_bilingual_relationship_levels) ... ok
+test_events_have_runtime_compatible_shape (tests.test_nagato_yuki_package.NagatoYukiPackageTests.test_events_have_runtime_compatible_shape) ... ok
+test_fixed_relationships_are_not_user_bindings (tests.test_nagato_yuki_package.NagatoYukiPackageTests.test_fixed_relationships_are_not_user_bindings) ... ok
+test_loader_allows_absent_optional_dialogue_file (tests.test_nagato_yuki_package.NagatoYukiPackageTests.test_loader_allows_absent_optional_dialogue_file) ... ok
+test_lore_is_formatted_by_real_formatter (tests.test_nagato_yuki_package.NagatoYukiPackageTests.test_lore_is_formatted_by_real_formatter) ... ok
+test_memories_have_unique_ids_tags_and_numeric_impacts (tests.test_nagato_yuki_package.NagatoYukiPackageTests.test_memories_have_unique_ids_tags_and_numeric_impacts) ... ok
+test_memory_emotion_does_not_start_saturated (tests.test_nagato_yuki_package.NagatoYukiPackageTests.test_memory_emotion_does_not_start_saturated) ... ok
+test_memory_retrieval_uses_actual_tags (tests.test_nagato_yuki_package.NagatoYukiPackageTests.test_memory_retrieval_uses_actual_tags) ... ok
+test_metadata_id_and_registry_discovery (tests.test_nagato_yuki_package.NagatoYukiPackageTests.test_metadata_id_and_registry_discovery) ... ok
+test_name_variants_match_current_substring_contract (tests.test_nagato_yuki_package.NagatoYukiPackageTests.test_name_variants_match_current_substring_contract) ... ok
+test_proactive_config_is_typed_and_in_range (tests.test_nagato_yuki_package.NagatoYukiPackageTests.test_proactive_config_is_typed_and_in_range) ... ok
+test_proactive_prompt_builds_without_dialogue_corpus (tests.test_nagato_yuki_package.NagatoYukiPackageTests.test_proactive_prompt_builds_without_dialogue_corpus) ... ok
+test_reactive_prompt_builds_for_all_reply_modes_and_levels (tests.test_nagato_yuki_package.NagatoYukiPackageTests.test_reactive_prompt_builds_for_all_reply_modes_and_levels) ... ok
+test_runtime_hard_fields_have_correct_types (tests.test_nagato_yuki_package.NagatoYukiPackageTests.test_runtime_hard_fields_have_correct_types) ... ok
+test_six_core_files_and_yaml_shapes (tests.test_nagato_yuki_package.NagatoYukiPackageTests.test_six_core_files_and_yaml_shapes) ... ok
+
+----------------------------------------------------------------------
+Ran 17 tests in 0.056s
+
+OK
+关系等级: 陌生人
+关系等级: 朋友
+关系等级: 亲密朋友
+关系等级: stranger
+关系等级: friend
+关系等级: 陌生人
+关系等级: 朋友
+关系等级: 亲密朋友
+关系等级: stranger
+关系等级: friend
+关系等级: 陌生人
+关系等级: 朋友
+关系等级: 亲密朋友
+关系等级: stranger
+关系等级: friend
+关系等级: 陌生人
+关系等级: 朋友
+关系等级: 亲密朋友
+关系等级: stranger
+关系等级: friend
+关系等级: 陌生人
+关系等级: 朋友
+关系等级: 亲密朋友
+关系等级: stranger
+关系等级: friend
+关系等级: 陌生人
+关系等级: 朋友
+关系等级: 亲密朋友
+关系等级: stranger
+关系等级: friend
+关系等级: 陌生人
+关系等级: 朋友
+关系等级: 亲密朋友
+关系等级: stranger
+关系等级: friend
+
+===== 现有风格/Prompt/Proactive回归 =====
+test_formatter_separates_style_from_facts (tests.test_dialogue_style.DialogueFormatterTests.test_formatter_separates_style_from_facts) ... ok
+test_character_loader_reads_optional_dialogue_style (tests.test_dialogue_style.DialogueLoaderAndPromptTests.test_character_loader_reads_optional_dialogue_style) ... ok
+test_old_character_package_shape_stays_compatible (tests.test_dialogue_style.DialogueLoaderAndPromptTests.test_old_character_package_shape_stays_compatible) ... ok
+test_prompt_injects_selected_style_examples (tests.test_dialogue_style.DialogueLoaderAndPromptTests.test_prompt_injects_selected_style_examples) ... ok
+test_anti_patterns_are_loaded (tests.test_dialogue_style.DialogueRetrieverTests.test_anti_patterns_are_loaded) ... ok
+test_context_match_ranks_best_example_first (tests.test_dialogue_style.DialogueRetrieverTests.test_context_match_ranks_best_example_first) ... ok
+test_reply_type_filters_mismatched_examples (tests.test_dialogue_style.DialogueRetrieverTests.test_reply_type_filters_mismatched_examples) ... ok
+test_duplicate_ids_are_rejected (tests.test_dialogue_style.DialogueValidatorTests.test_duplicate_ids_are_rejected) ... ok
+test_valid_dialogue_file (tests.test_dialogue_style.DialogueValidatorTests.test_valid_dialogue_file) ... ok
+test_tease_behavior_in_prompt (tests.test_prompt_behavior.TestPromptBehavior.test_tease_behavior_in_prompt) ... ok
+test_character_messages_do_not_count (tests.test_proactive_behavior.TestProactiveBehaviorEngine.test_character_messages_do_not_count) ... ok
+test_cooldown_blocks_character (tests.test_proactive_behavior.TestProactiveBehaviorEngine.test_cooldown_blocks_character) ... ok
+test_cooldown_is_group_specific (tests.test_proactive_behavior.TestProactiveBehaviorEngine.test_cooldown_is_group_specific) ... ok
+test_enough_context_passes_precheck (tests.test_proactive_behavior.TestProactiveBehaviorEngine.test_enough_context_passes_precheck) ... ok
+test_high_probability_can_speak (tests.test_proactive_behavior.TestProactiveBehaviorEngine.test_high_probability_can_speak) ... ok
+test_insufficient_context (tests.test_proactive_behavior.TestProactiveBehaviorEngine.test_insufficient_context) ... ok
+test_low_energy_reduces_score (tests.test_proactive_behavior.TestProactiveBehaviorEngine.test_low_energy_reduces_score) ... ok
+test_low_probability_stays_silent (tests.test_proactive_behavior.TestProactiveBehaviorEngine.test_low_probability_stays_silent) ... ok
+test_proactive_can_be_disabled (tests.test_proactive_behavior.TestProactiveBehaviorEngine.test_proactive_can_be_disabled) ... ok
+test_scene_can_recommend_observe (tests.test_proactive_behavior.TestProactiveBehaviorEngine.test_scene_can_recommend_observe) ... ok
+
+----------------------------------------------------------------------
+Ran 20 tests in 0.053s
+
+OK
+关系等级: friend
+关系等级: friend
+
+===== 现有@/引用Target回归 =====
+test_at_all_is_not_other_user (tests.test_onebot_target_metadata.OneBotMetadataTests.test_at_all_is_not_other_user) ... ok
+test_at_bot (tests.test_onebot_target_metadata.OneBotMetadataTests.test_at_bot) ... ok
+test_at_bot_and_other (tests.test_onebot_target_metadata.OneBotMetadataTests.test_at_bot_and_other) ... ok
+test_at_other_member (tests.test_onebot_target_metadata.OneBotMetadataTests.test_at_other_member) ... ok
+test_reply_segment_extracts_message_id (tests.test_onebot_target_metadata.OneBotMetadataTests.test_reply_segment_extracts_message_id) ... ok
+test_reply_seq_fallback (tests.test_onebot_target_metadata.OneBotMetadataTests.test_reply_seq_fallback) ... ok
+test_apply_reply_sender_marks_bot (tests.test_onebot_target_metadata.ReplySenderResolutionTests.test_apply_reply_sender_marks_bot) ... ok
+test_apply_reply_sender_marks_other_user (tests.test_onebot_target_metadata.ReplySenderResolutionTests.test_apply_reply_sender_marks_other_user) ... ok
+test_extract_sender_from_get_msg_response (tests.test_onebot_target_metadata.ReplySenderResolutionTests.test_extract_sender_from_get_msg_response) ... ok
+test_failed_get_msg_response_returns_none (tests.test_onebot_target_metadata.ReplySenderResolutionTests.test_failed_get_msg_response_returns_none) ... ok
+test_at_bot_forces_character (tests.test_onebot_target_metadata.TargetResolverMetadataTests.test_at_bot_forces_character) ... ok
+test_at_bot_has_priority_when_both_exist (tests.test_onebot_target_metadata.TargetResolverMetadataTests.test_at_bot_has_priority_when_both_exist) ... ok
+test_at_other_forces_third_person (tests.test_onebot_target_metadata.TargetResolverMetadataTests.test_at_other_forces_third_person) ... ok
+test_reply_to_bot_forces_character (tests.test_onebot_target_metadata.TargetResolverMetadataTests.test_reply_to_bot_forces_character) ... ok
+test_reply_to_bot_has_priority_over_at_other (tests.test_onebot_target_metadata.TargetResolverMetadataTests.test_reply_to_bot_has_priority_over_at_other) ... ok
+
+----------------------------------------------------------------------
+Ran 15 tests in 0.003s
+
+OK
+Target Signals: {'at_bot': True, 'at_other_users': [], 'reply_to_bot': False, 'reply_message_id': None, 'reply_sender_user_id': None, 'explicit_character': False, 'explicit_third_person': False, 'direct_followup': False, 'llm_target': 'skipped', 'final_target': 'character'}
+Target Signals: {'at_bot': True, 'at_other_users': ['123'], 'reply_to_bot': False, 'reply_message_id': None, 'reply_sender_user_id': None, 'explicit_character': False, 'explicit_third_person': False, 'direct_followup': False, 'llm_target': 'skipped', 'final_target': 'character'}
+Target Signals: {'at_bot': False, 'at_other_users': ['123'], 'reply_to_bot': False, 'reply_message_id': None, 'reply_sender_user_id': None, 'explicit_character': False, 'explicit_third_person': True, 'direct_followup': False, 'llm_target': 'skipped', 'final_target': 'third_person'}
+Target Signals: {'at_bot': False, 'at_other_users': [], 'reply_to_bot': True, 'reply_message_id': '1001', 'reply_sender_user_id': '999', 'explicit_character': False, 'explicit_third_person': False, 'direct_followup': False, 'llm_target': 'skipped', 'final_target': 'character'}
+Target Signals: {'at_bot': False, 'at_other_users': ['123'], 'reply_to_bot': True, 'reply_message_id': '1001', 'reply_sender_user_id': '999', 'explicit_character': False, 'explicit_third_person': False, 'direct_followup': False, 'llm_target': 'skipped', 'final_target': 'character'}
+
+===== 交付文件 SHA-256（不包含本记录文件） =====
+6b20397b5ee7a7c5a8800edf20ec773fd154e0a48c301aeedef37caecbaeadbc  bot/characters/nagato_yuki/card.yaml
+a1fa67233334d2138ac6e62ece572728ad864bab675d483598600535f7b58f22  bot/characters/nagato_yuki/events.yaml
+0c9593b86caf5a1b6eac3be8c517b3e08bdb776ff98a5e5b6c3672fefd2c4e85  bot/characters/nagato_yuki/lore.yaml
+fb97e40c8f47bb493a0bff176272028ec6c73a4748d6fee8a7791a19bbd01173  bot/characters/nagato_yuki/memories.yaml
+508b5956373ef3118fe52f8027594329c4c41dbf89f6b2ee39f8421147f85b5b  bot/characters/nagato_yuki/relationships.yaml
+c58211ae10034a39b07bace4455ba2834a3fe7f0330877b727ba2ff58a10dce4  bot/characters/nagato_yuki/reply_behavior.yaml
+65adae08ab2425a84a0571103e2cf2a3e61b73111126c34a6e592c9bf9cd7bff  docs/NAGATO_YUKI_CHARACTER_PACKAGE_V1.md
+c460efda4671727ace0956437da60d68748fec1f03019d233b7fcdc50288eec6  tests/test_nagato_yuki_package.py

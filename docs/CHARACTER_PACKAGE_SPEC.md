@@ -563,3 +563,78 @@ reply_behavior.proactive
 v2:
 
 重大结构变化。
+---
+
+# 8. dialogue_examples.yaml（可选，Dialogue Style System v1）
+
+作用：
+
+定义角色“怎么说话”的语言示范与需要避免的 AI 式表达习惯。
+
+它与 lore / memories 的职责不同：
+
+- lore / memories：提供角色知道的事实、经历与记忆。
+- reply_behavior：规定角色在不同情况下采取什么行为。
+- dialogue_examples：只提供语言风格示范，不提供新的事实。
+
+该文件是可选扩展。旧的 Character Package v1.1 即使没有该文件也必须继续可用。
+
+推荐结构：
+
+```yaml
+dialogue_style:
+
+  anti_patterns:
+    - 不要先复述用户刚说过的话再回应
+    - 普通聊天不要习惯性总结
+
+  examples:
+    - id: example_001
+      source: canonical_or_synthetic
+
+      reply_type:
+        - chat
+
+      emotion:
+        - happy
+
+      scene:
+        - group_chat
+
+      relationship:
+        - friend
+
+      keywords:
+        - 示例关键词
+
+      situation: |
+        这句话通常出现在什么语境。
+
+      style_tags:
+        - 短句
+        - 反问
+
+      text: |
+        角色语言示范。
+```
+
+字段说明：
+
+- `id`：唯一 ID，必填。
+- `text`：语言示范，必填。
+- `reply_type`：适合 answer / chat / tease / comfort / greet / share 等回复模式。
+- `emotion`：适合的情绪。
+- `scene`：适合的场景，例如 group_chat / private_chat / funny / serious。
+- `relationship`：适合的关系等级。
+- `keywords`：消息中出现这些词时提高该示范的检索分数。
+- `situation`：对示范语境的说明。
+- `style_tags`：用于说明表达特征，不作为世界观事实。
+- `anti_patterns`：该角色需要避免的高频 AI 式表达习惯。
+
+运行时原则：
+
+1. 只检索少量最匹配示范，默认最多 4 条。
+2. `reply_type` 是强约束，不把 tease 示例错误注入 answer。
+3. 示例只用于学习语言风格，不得继承其中的人物、事件、地点或经历。
+4. 不直接复述或近似照抄示范台词。
+5. 角色事实、当前消息和真实聊天上下文始终高于语言示范。

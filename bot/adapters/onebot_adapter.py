@@ -9,6 +9,11 @@ from fastapi import (
 
 from ..message_handler import handle_message
 from ..outbound_lifecycle import commit_sent_message
+from ..onebot_message_metadata import (
+    extract_message_metadata,
+    extract_reply_sender_user_id,
+    apply_reply_sender,
+)
 
 from ..admin_commands import (
     handle_admin_command
@@ -360,6 +365,113 @@ async def send_group_message(
 
 
 # ============================================================
+# Reply Metadata Resolver
+# ============================================================
+
+async def resolve_reply_metadata(
+    event,
+    message_metadata
+):
+
+    """
+    如果当前消息包含 OneBot reply 段，查询被回复消息的 sender。
+
+    reply 段本身只有 message_id，不能直接知道回复对象是不是 Bot。
+    因此通过 get_msg(message_id) 获取原消息 sender.user_id。
+
+    查询失败时安全降级：
+    - 保留 reply_message_id
+    - reply_to_bot=False
+    - 不猜测 target
+    """
+
+    message_metadata = (
+        message_metadata
+        or {}
+    )
+
+    reply_message_id = (
+        message_metadata.get(
+            "reply_message_id"
+        )
+    )
+
+    if not reply_message_id:
+        return message_metadata
+
+    # OneBot 11 get_msg 标准参数是数字 message_id。
+    # NapCat 的 reply data.id 可能以字符串形式到达，
+    # 纯数字时转换为 int；无法转换时保留原值做兼容。
+    api_message_id = reply_message_id
+
+    try:
+        api_message_id = int(
+            str(reply_message_id)
+        )
+    except (TypeError, ValueError):
+        pass
+
+    try:
+        response = await onebot_connection.send_action(
+            action="get_msg",
+            params={
+                "message_id": api_message_id
+            },
+            timeout=5
+        )
+
+    except Exception as e:
+        print(
+            "Reply Metadata Resolve Error:",
+            repr(e),
+            {
+                "reply_message_id": reply_message_id
+            }
+        )
+
+        return message_metadata
+
+    reply_sender_user_id = (
+        extract_reply_sender_user_id(
+            response
+        )
+    )
+
+    if not reply_sender_user_id:
+        print(
+            "Reply Metadata Resolve Failed:",
+            {
+                "reply_message_id": reply_message_id,
+                "status": response.get("status")
+                    if isinstance(response, dict)
+                    else None,
+                "retcode": response.get("retcode")
+                    if isinstance(response, dict)
+                    else None,
+            }
+        )
+
+        return message_metadata
+
+    resolved = apply_reply_sender(
+        metadata=message_metadata,
+        self_id=event.get("self_id"),
+        reply_sender_user_id=reply_sender_user_id
+    )
+
+    print(
+        "Reply Metadata Resolved:",
+        {
+            "reply_message_id": resolved.get("reply_message_id"),
+            "reply_sender_user_id": resolved.get("reply_sender_user_id"),
+            "reply_to_bot": resolved.get("reply_to_bot"),
+        }
+    )
+
+    return resolved
+
+
+# ============================================================
 # Group Message Handler
 # ============================================================
 
@@ -438,6 +550,11 @@ async def process_group_message_locked(
     raw_message = event.get(
         "raw_message",
         ""
+    )
+
+
+    message_metadata = extract_message_metadata(
+        event
     )
 
 
@@ -553,6 +670,21 @@ async def process_group_message_locked(
 
 
     # ========================================================
+    # Reply / Quote Metadata
+    # ========================================================
+    #
+    # reply segment 只告诉我们被回复消息的 message_id。
+    # 这里通过 OneBot get_msg 查询原消息 sender，
+    # 得到 reply_to_bot 这个确定性 target 信号。
+    # ========================================================
+
+    message_metadata = await resolve_reply_metadata(
+        event,
+        message_metadata
+    )
+
+
+    # ========================================================
     # 2. 打印真实 QQ 消息
     # ========================================================
 
@@ -579,6 +711,12 @@ async def process_group_message_locked(
     print(
         "raw_message:",
         raw_message
+    )
+
+
+    print(
+        "message_metadata:",
+        message_metadata
     )
 
     print(
@@ -616,7 +754,9 @@ async def process_group_message_locked(
 
             raw_message,
 
-            group_id
+            group_id,
+
+            message_metadata
 
         )
 

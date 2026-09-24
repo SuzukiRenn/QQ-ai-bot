@@ -9,6 +9,10 @@ from .emotion_formatter import (
     format_emotion_context,
 )
 
+from .dialogue_formatter import (
+    format_dialogue_examples,
+)
+
 
 # ============================================================
 # Generic Formatter
@@ -301,6 +305,8 @@ def build_prompt(
     relationship_level=None,
     message_context=None,
     reply_type=None,
+    dialogue_examples=None,
+    dialogue_anti_patterns=None,
 ):
 
     knowledge = (
@@ -1342,6 +1348,25 @@ should_reply
 
 不要表现得像数据库。
 
+
+"""
+
+
+    # ========================================================
+    # Dialogue Style Examples
+    # ========================================================
+
+    dialogue_style_text = format_dialogue_examples(
+        dialogue_examples,
+        dialogue_anti_patterns
+    )
+
+
+    if dialogue_style_text:
+
+        prompt += f"""
+
+{dialogue_style_text}
 
 """
 
