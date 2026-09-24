@@ -9,6 +9,8 @@ from fastapi import (
 
 from ..message_handler import handle_message
 from ..outbound_lifecycle import commit_sent_message
+from ..media.onebot_media_parser import parse_onebot_message_segments
+
 from ..onebot_message_metadata import (
     extract_message_metadata,
     extract_reply_sender_user_id,
@@ -557,6 +559,11 @@ async def process_group_message_locked(
         event
     )
 
+    media_context = parse_onebot_message_segments(
+        event.get("message")
+    )
+
+
 
     # ========================================================
     # 1. 防御性检查
@@ -717,6 +724,11 @@ async def process_group_message_locked(
     print(
         "message_metadata:",
         message_metadata
+    )
+
+    print(
+        "media_context:",
+        media_context.to_dict()
     )
 
     print(
